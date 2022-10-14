@@ -1,7 +1,7 @@
 {
   "name": "rhf-mantine",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "0.1.0",
   "type": "module",
   "exports": {
     ".": {
@@ -26,9 +26,7 @@
   },
   "peerDependencies": {
     "react-hook-form": "^7.37.0",
-    "@emotion/react": "^11.10.4",
-    "@mantine/core": "^5.5.5",
-    "@mantine/hooks": "^5.5.5"
+    "@mantine/core": "^5.5.5"
   },
   "devDependencies": {
     "react-hook-form": "^7.37.0",
