@@ -1,8 +1,11 @@
 # rhf-mantine
+
+
 A thin wrapper around the [Mantine](https://mantine.dev/) input components to use with [react-hook-form](https://react-hook-form.com/).
 
 Requires only a `name` prop added to the components and lets react-hook-form handle the rest, even automatically setting the error prop when react-hook-form triggers a validation error on the field.
 
+[![rhf-mantine Versions](https://badges.openbase.com/js/versions/rhf-mantine.svg?)](https://openbase.com/js/rhf-mantine?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 ## Installation
 ```bash
 npm install rhf-mantine
