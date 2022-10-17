@@ -1,11 +1,19 @@
 import { defineConfig } from "vite";
 
+import react from "@vitejs/plugin-react";
 import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { typescriptPaths } from "rollup-plugin-typescript-paths";
+import dts from "vite-plugin-dts";
+import external from "rollup-plugin-peer-deps-external";
 
 export default defineConfig({
-  plugins: [],
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
   resolve: {
     alias: [
       {
@@ -18,22 +26,25 @@ export default defineConfig({
     port: 3000,
   },
   build: {
+    sourcemap: true,
     manifest: true,
     minify: true,
     reportCompressedSize: true,
     lib: {
       entry: path.resolve(__dirname, "src/main.ts"),
-      fileName: "main",
-      formats: ["es", "cjs"],
+      name: "rhf-mantine",
+      formats: ["es", "umd"],
+      fileName: (format) => `rhf-mantine.${format}.js`,
     },
     rollupOptions: {
-      external: [],
+      external: ["react"],
       plugins: [
+        external(),
         typescriptPaths({
           preserveExtensions: true,
         }),
         typescript({
-          sourceMap: false,
+          sourceMap: true,
           declaration: true,
           outDir: "dist",
         }),
