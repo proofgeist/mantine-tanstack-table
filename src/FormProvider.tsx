@@ -1,10 +1,9 @@
-import { PropsWithChildren } from "react";
 import {
   FieldValues,
   FormProvider,
+  FormProviderProps,
   SubmitErrorHandler,
   SubmitHandler,
-  UseFormReturn,
 } from "react-hook-form";
 import { createAutocompleteField } from "./RHFAutocomplete";
 import { createCheckboxField } from "./RHFCheckbox";
@@ -24,21 +23,22 @@ import { createSwitchField } from "./RHFSwitch";
 import { createTextareaField } from "./RHFTextarea";
 import { createTextInputField } from "./RHFTextInput";
 
-type CreateFormProviderProps<T extends FieldValues> = {
-  formMethods: UseFormReturn<T>;
+type CreateFormProviderProps<T extends FieldValues> = FormProviderProps<T> & {
   onSubmit?: SubmitHandler<T>;
   onError?: SubmitErrorHandler<T>;
 };
-export const createFormProvider = <T extends FieldValues>({
-  formMethods,
-  onSubmit = (values) => console.log(values),
-  onError = (err) => console.error(err),
-}: CreateFormProviderProps<T>) => {
-  const Form = (props: PropsWithChildren<Record<string, unknown>>) => {
+export const createFormProvider = <T extends FieldValues>() => {
+  const Form = (props: CreateFormProviderProps<T>) => {
+    const {
+      onSubmit = (values) => console.log(values),
+      onError = (err) => console.error(err),
+      children,
+      ...formMethods
+    } = props;
     return (
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
-          {props.children}
+          {children}
         </form>
       </FormProvider>
     );

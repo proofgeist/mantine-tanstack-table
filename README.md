@@ -56,21 +56,21 @@ If you type your form values, you can pass the type to the components to get aut
 You can automatically infer the form types and avoid passing it everywhere if you use the `createFormProvider` method exposed by this package.
 ```tsx
 import { createFormProvider } from "rhf-mantine"
-import { useForm } from "react-hook-form"
+import { useForm, HandleSubmit } from "react-hook-form"
 
 type FormValues = { name: string }
 
-function MyComponent() {
-  const formMethods = useForm<FormValues>() // only define the type once
+// create a Form Provider component with the types embedded
+// be sure to do this OUTSIDE of your page/component to avoid re-renders
+const Form = createFormProvider<FormValues>()
 
-  // then create a Form Provider component with the types embedded
-  const Form = createFormProvider({
-    formMethods,
-    onSubmit: (data) => console.log(data)
-  })
+function MyComponent() {
+  const formMethods = useForm<FormValues>()
+
+  const onSubmit: HandleSubmit<FormValues> = (data) => console.log(data)
 
   return (
-    <Form>
+    <Form {...formMethods} onSubmit={onSubmit}>
       <Form.TextInput
         name="name"  {/* type is inferred from FormValues */}
         rules={{ required: "This field is required" }}
