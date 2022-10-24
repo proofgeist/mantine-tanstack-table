@@ -39,7 +39,7 @@ function MyComponent() {
     <FormProvider {...formMethods}>
       <TextInput
         name="myInput" // required
-        rules={{required: "This field is required"}}
+        rules={{ required: "This field is required" }}
         label="My Input"
         placeholder="Enter something"
       />
@@ -53,22 +53,30 @@ Most, but not all Mantine input components are supported.
 ## TypeScript Support
 If you type your form values, you can pass the type to the components to get autocomplete suggestions on the required `name` prop
 
+You can automatically infer the form types and avoid passing it everywhere if you use the `createFormProvider` method exposed by this package.
 ```tsx
-import { TextInput } from "rhf-mantine"
-import { useForm, FormProvider } from "react-hook-form"
+import { createFormProvider } from "rhf-mantine"
+import { useForm } from "react-hook-form"
 
 type FormValues = { name: string }
 
 function MyComponent() {
-  const formMethods = useForm<FormValues>()
+  const formMethods = useForm<FormValues>() // only define the type once
+
+  // then create a Form Provider component with the types embedded
+  const Form = createFormProvider({
+    formMethods,
+    onSubmit: (data) => console.log(data)
+  })
+
   return (
-    <FormProvider {...formMethods}>
-      <TextInput<FormValues>
-        name="name" // will have type checking
-        rules={{required: "This field is required"}}
+    <Form>
+      <Form.TextInput
+        name="name"  {/* type is inferred from FormValues */}
+        rules={{ required: "This field is required" }}
         label="My name"
       />
-    </FormProvider>
+    </Form>
   )
 }
 ```

@@ -12,7 +12,7 @@ type Props<T extends FieldValues = FieldValues> = FileInputProps & {
   defaultValue?: UseControllerProps<T>["defaultValue"];
 };
 
-function RHFTextInput<T extends FieldValues = FieldValues>(props: Props<T>) {
+function RHFFileInput<T extends FieldValues = FieldValues>(props: Props<T>) {
   const { name, rules, defaultValue, ...others } = props;
   const {
     field,
@@ -28,4 +28,9 @@ function RHFTextInput<T extends FieldValues = FieldValues>(props: Props<T>) {
     />
   );
 }
-export default RHFTextInput;
+export default RHFFileInput;
+
+export const createFileInputField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFFileInput {...props} />;
+  return Field;
+};

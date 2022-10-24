@@ -29,3 +29,8 @@ function RHFSelect<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFSelect;
+
+export const createSelectField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFSelect {...props} />;
+  return Field;
+};

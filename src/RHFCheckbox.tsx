@@ -31,3 +31,8 @@ function RHFCheckbox<T extends FieldValues = FieldValues>(props: Props<T>) {
 }
 RHFCheckbox.Group = CheckboxGroup;
 export default RHFCheckbox;
+
+export const createCheckboxField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFCheckbox {...props} />;
+  return Field;
+};

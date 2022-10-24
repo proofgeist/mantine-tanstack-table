@@ -29,3 +29,8 @@ function RHFMultiSelect<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFMultiSelect;
+
+export const createMultiSelectField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFMultiSelect {...props} />;
+  return Field;
+};

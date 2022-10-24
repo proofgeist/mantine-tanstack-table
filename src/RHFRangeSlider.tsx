@@ -24,3 +24,8 @@ function RHFRangeSlider<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFRangeSlider;
+
+export const createRangeSliderField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFRangeSlider {...props} />;
+  return Field;
+};

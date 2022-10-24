@@ -30,3 +30,8 @@ export default function RHFTextarea<T extends FieldValues = FieldValues>(
     />
   );
 }
+
+export const createTextareaField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFTextarea {...props} />;
+  return Field;
+};

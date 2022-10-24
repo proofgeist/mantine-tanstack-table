@@ -22,3 +22,8 @@ function RHFSlider<T extends FieldValues = FieldValues>(props: Props<T>) {
   return <Slider {...field} value={field.value ?? NaN} {...others} />;
 }
 export default RHFSlider;
+
+export const createSliderField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFSlider {...props} />;
+  return Field;
+};

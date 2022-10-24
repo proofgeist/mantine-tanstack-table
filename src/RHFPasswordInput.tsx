@@ -31,3 +31,8 @@ function RHFPasswordInput<T extends FieldValues = FieldValues>(
   );
 }
 export default RHFPasswordInput;
+
+export const createPasswordInputField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFPasswordInput {...props} />;
+  return Field;
+};

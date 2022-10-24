@@ -29,3 +29,8 @@ function RHFJsonInput<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFJsonInput;
+
+export const createJsonInputField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFJsonInput {...props} />;
+  return Field;
+};

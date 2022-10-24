@@ -31,3 +31,8 @@ function RHFSwitch<T extends FieldValues = FieldValues>(props: Props<T>) {
 }
 RHFSwitch.Group = RHFSwitchGroup;
 export default RHFSwitch;
+
+export const createSwitchField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFSwitch {...props} />;
+  return Field;
+};

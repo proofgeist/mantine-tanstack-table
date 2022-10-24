@@ -35,3 +35,8 @@ function RHFTextInput<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFTextInput;
+
+export const createTextInputField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFTextInput {...props} />;
+  return Field;
+};

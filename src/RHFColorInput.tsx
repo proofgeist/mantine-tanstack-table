@@ -29,3 +29,8 @@ function RHFColorInput<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFColorInput;
+
+export const createColorInputField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFColorInput {...props} />;
+  return Field;
+};

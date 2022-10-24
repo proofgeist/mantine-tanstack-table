@@ -29,3 +29,8 @@ function RHFSegmentedControl<T extends FieldValues = FieldValues>(
   return <SegmentedControl {...field} value={field.value ?? ""} {...others} />;
 }
 export default RHFSegmentedControl;
+
+export const createSegmentedControlField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFSegmentedControl {...props} />;
+  return Field;
+};

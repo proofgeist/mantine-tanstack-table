@@ -25,3 +25,8 @@ function RHFChip<T extends FieldValues = FieldValues>(props: Props<T>) {
 
 RHFChip.Group = RHFChipGroup;
 export default RHFChip;
+
+export const createChipField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFChip {...props} />;
+  return Field;
+};

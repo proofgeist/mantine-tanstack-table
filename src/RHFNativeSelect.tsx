@@ -29,3 +29,8 @@ function RHFNativeSelect<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFNativeSelect;
+
+export const createNativeSelectField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFNativeSelect {...props} />;
+  return Field;
+};

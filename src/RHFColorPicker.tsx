@@ -22,3 +22,8 @@ function RHFColorPicker<T extends FieldValues = FieldValues>(props: Props<T>) {
   return <ColorPicker {...field} value={field.value ?? ""} {...others} />;
 }
 export default RHFColorPicker;
+
+export const createColorPickerField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFColorPicker {...props} />;
+  return Field;
+};

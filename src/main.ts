@@ -16,3 +16,4 @@ export { default as Select } from "./RHFSelect";
 export { default as Slider } from "./RHFSlider";
 export { default as RangeSlider } from "./RHFRangeSlider";
 export { default as Switch } from "./RHFSwitch";
+export { createFormProvider } from "./FormProvider";
