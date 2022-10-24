@@ -16,14 +16,22 @@ export default function RHFAutocomplete<T extends FieldValues = FieldValues>(
   props: Props<T>
 ) {
   const { name, rules, defaultValue, ...others } = props;
-  const { field, fieldState, formState } = useController({ name, rules });
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ name, rules });
 
   return (
     <Autocomplete
       {...field}
       value={field.value ?? ""}
-      error={fieldState.error?.message}
+      error={error ? error?.message ?? "This field is required" : false}
       {...others}
     />
   );
 }
+
+export const createAutocompleteField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFAutocomplete {...props} />;
+  return Field;
+};

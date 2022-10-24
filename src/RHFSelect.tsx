@@ -14,13 +14,16 @@ type Props<T extends FieldValues = FieldValues> = SelectProps & {
 
 function RHFSelect<T extends FieldValues = FieldValues>(props: Props<T>) {
   const { name, rules, defaultValue, ...others } = props;
-  const { field, fieldState, formState } = useController({ name, rules });
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ name, rules });
 
   return (
     <Select
       {...field}
       value={field.value ?? null}
-      error={fieldState.error?.message}
+      error={error ? error?.message ?? "This field is required" : false}
       {...others}
     />
   );

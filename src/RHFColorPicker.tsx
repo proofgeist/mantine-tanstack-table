@@ -14,7 +14,10 @@ type Props<T extends FieldValues = FieldValues> = ColorPickerProps & {
 
 function RHFColorPicker<T extends FieldValues = FieldValues>(props: Props<T>) {
   const { name, rules, defaultValue, ...others } = props;
-  const { field, fieldState, formState } = useController({ name, rules });
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ name, rules });
 
   return <ColorPicker {...field} value={field.value ?? ""} {...others} />;
 }

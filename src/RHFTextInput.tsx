@@ -14,13 +14,22 @@ type Props<T extends FieldValues = FieldValues> = TextInputProps & {
 
 function RHFTextInput<T extends FieldValues = FieldValues>(props: Props<T>) {
   const { name, rules, defaultValue, ...others } = props;
-  const { field, fieldState, formState } = useController({ name, rules });
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ name, rules });
 
   return (
     <TextInput
       {...field}
       value={field.value ?? ""}
-      error={fieldState.error?.message}
+      error={
+        error
+          ? error.message === "" && error.type === "required"
+            ? "Required"
+            : error.message
+          : false
+      }
       {...others}
     />
   );

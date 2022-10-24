@@ -16,13 +16,16 @@ function RHFPasswordInput<T extends FieldValues = FieldValues>(
   props: Props<T>
 ) {
   const { name, rules, defaultValue, ...others } = props;
-  const { field, fieldState, formState } = useController({ name, rules });
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ name, rules });
 
   return (
     <PasswordInput
       {...field}
       value={field.value ?? ""}
-      error={fieldState.error?.message}
+      error={error ? error?.message ?? "This field is required" : false}
       {...others}
     />
   );
