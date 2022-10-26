@@ -14,6 +14,7 @@ import { createFileInputField } from "./RHFFileInput";
 import { createJsonInputField } from "./RHFJsonInput";
 import { createMultiSelectField } from "./RHFMultiSelect";
 import { createNativeSelectField } from "./RHFNativeSelect";
+import { createNumberInputField } from "./RHFNumberinput";
 import { createPasswordInputField } from "./RHFPasswordInput";
 import { createRangeSliderField } from "./RHFRangeSlider";
 import { createSegmentedControlField } from "./RHFSegmentedControl";
@@ -56,6 +57,7 @@ export const createFormProvider = <T extends FieldValues>() => {
   Form.JsonInput = createJsonInputField<T>();
   Form.MultiSelect = createMultiSelectField<T>();
   Form.NativeSelect = createNativeSelectField<T>();
+  Form.NumberInput = createNumberInputField<T>();
   Form.PasswordInput = createPasswordInputField<T>();
   Form.SegmentedControl = createSegmentedControlField<T>();
   Form.Select = createSelectField<T>();
