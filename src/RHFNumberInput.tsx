@@ -21,7 +21,6 @@ function RHFNumberInput<T extends FieldValues = FieldValues>(props: Props<T>) {
   return (
     <NumberInput
       {...field}
-      value={field.value ?? NaN}
       error={
         error
           ? error.message === "" && error.type === "required"
