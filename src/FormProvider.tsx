@@ -14,7 +14,7 @@ import { createFileInputField } from "./RHFFileInput";
 import { createJsonInputField } from "./RHFJsonInput";
 import { createMultiSelectField } from "./RHFMultiSelect";
 import { createNativeSelectField } from "./RHFNativeSelect";
-import { createNumberInputField } from "./RHFNumberinput";
+import { createNumberInputField } from "./RHFNumberInput";
 import { createPasswordInputField } from "./RHFPasswordInput";
 import { createRangeSliderField } from "./RHFRangeSlider";
 import { createSegmentedControlField } from "./RHFSegmentedControl";

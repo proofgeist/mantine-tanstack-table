@@ -9,6 +9,7 @@ export { default as Textarea } from "./RHFTextarea";
 export { default as JsonInput } from "./RHFJsonInput";
 export { default as MultiSelect } from "./RHFMultiSelect";
 export { default as NativeSelect } from "./RHFNativeSelect";
+export { default as NumberInput } from "./RHFNumberInput";
 export { default as PasswordInput } from "./RHFPasswordInput";
 export { default as Radio } from "./RHFRadio";
 export { default as SegmentedControl } from "./RHFSegmentedControl";
