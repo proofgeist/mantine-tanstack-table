@@ -24,6 +24,7 @@ function RHFCheckbox<T extends FieldValues = FieldValues>(props: Props<T>) {
     <Checkbox
       {...field}
       value={field.value ?? ""}
+      checked={field.value ?? false}
       error={error ? error?.message ?? "This field is required" : false}
       {...others}
     />
