@@ -21,6 +21,14 @@ npm install rhf-mantine react-hook-form @mantine/core
 yarn add rhf-mantine react-hook-form @mantine/core
 ```
 
+If you indend to use the Date/Time inputs, you also need the `dayjs` and `@mantine/dates` as peers
+
+```bash
+npm install dayjs @mantine/dates
+# or
+yarn add dayjs @mantine/dates
+```
+
 ## Usage
 Replace your import statments from `@mantine/core` with `rhf-mantine`.
 
@@ -48,7 +56,7 @@ function MyComponent() {
 }
 ```
 
-Most, but not all Mantine input components are supported.
+Most, but not all Mantine input components are supported. PRs welcome!
 
 ## TypeScript Support
 If you type your form values, you can pass the type to the components to get autocomplete suggestions on the required `name` prop
@@ -56,7 +64,7 @@ If you type your form values, you can pass the type to the components to get aut
 You can automatically infer the form types and avoid passing it everywhere if you use the `createFormProvider` method exposed by this package.
 ```tsx
 import { createFormProvider } from "rhf-mantine"
-import { useForm, HandleSubmit } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form"
 
 type FormValues = { name: string }
 
@@ -65,12 +73,12 @@ type FormValues = { name: string }
 const Form = createFormProvider<FormValues>()
 
 function MyComponent() {
-  const formMethods = useForm<FormValues>()
+  const form = useForm<FormValues>()
 
-  const onSubmit: HandleSubmit<FormValues> = (data) => console.log(data)
+  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data)
 
   return (
-    <Form {...formMethods} onSubmit={onSubmit}>
+    <Form {...form} onSubmit={onSubmit}>
       <Form.TextInput
         name="name"  {/* type is inferred from FormValues */}
         rules={{ required: "This field is required" }}
