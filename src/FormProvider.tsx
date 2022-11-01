@@ -10,6 +10,8 @@ import { createCheckboxField } from "./RHFCheckbox";
 import { createChipField } from "./RHFChip";
 import { createColorInputField } from "./RHFColorInput";
 import { createColorPickerField } from "./RHFColorPicker";
+import { createDatePickerField } from "./RHFDatePicker";
+import { createDateRangePickerField } from "./RHFDateRangePicker";
 import { createFileInputField } from "./RHFFileInput";
 import { createJsonInputField } from "./RHFJsonInput";
 import { createMultiSelectField } from "./RHFMultiSelect";
@@ -23,6 +25,7 @@ import { createSliderField } from "./RHFSlider";
 import { createSwitchField } from "./RHFSwitch";
 import { createTextareaField } from "./RHFTextarea";
 import { createTextInputField } from "./RHFTextInput";
+import { createTimeInputField } from "./RHFTimeInput";
 
 type CreateFormProviderProps<T extends FieldValues> = FormProviderProps<T> & {
   onSubmit?: SubmitHandler<T>;
@@ -64,6 +67,10 @@ export const createFormProvider = <T extends FieldValues>() => {
   Form.Slider = createSliderField<T>();
   Form.RangeSlider = createRangeSliderField<T>();
   Form.Switch = createSwitchField<T>();
+
+  Form.DatePicker = createDatePickerField<T>();
+  Form.DateRangePicker = createDateRangePickerField<T>();
+  Form.TimeInput = createTimeInputField<T>();
 
   return Form;
 };

@@ -17,4 +17,9 @@ export { default as Select } from "./RHFSelect";
 export { default as Slider } from "./RHFSlider";
 export { default as RangeSlider } from "./RHFRangeSlider";
 export { default as Switch } from "./RHFSwitch";
+
+export { default as DatePicker } from "./RHFDatePicker";
+export { default as DateRangePicker } from "./RHFDateRangePicker";
+export { default as TimeInput } from "./RHFTimeInput";
+
 export { createFormProvider } from "./FormProvider";

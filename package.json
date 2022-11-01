@@ -1,7 +1,7 @@
 {
   "name": "rhf-mantine",
   "private": false,
-  "version": "0.3.4",
+  "version": "0.3.7",
   "type": "module",
   "repository": "https://github.com/eluce2/rhf-mantine",
   "bugs": "https://github.com/eluce2/rhf-mantine/issues",
@@ -34,12 +34,14 @@
   "devDependencies": {
     "@emotion/react": "^11.10.4",
     "@mantine/core": "^5.5.5",
+    "@mantine/dates": "^5.6.3",
     "@mantine/hooks": "^5.5.5",
     "@rollup/plugin-typescript": "^8.2.1",
     "@types/node": "^17.0.35",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",
+    "dayjs": "^1.11.6",
     "prettier": "2.6.2",
     "react-hook-form": "^7.37.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
