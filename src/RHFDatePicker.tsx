@@ -22,7 +22,7 @@ function RHFDatePicker<T extends FieldValues = FieldValues>(props: Props<T>) {
   return (
     <DatePicker
       {...field}
-      value={field.value}
+      value={(field.value as any) instanceof Date ? field.value : null}
       onChange={(value) => field.onChange(value)}
       error={
         error
