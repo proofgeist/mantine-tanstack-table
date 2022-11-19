@@ -21,5 +21,6 @@ export { default as Switch } from "./RHFSwitch";
 export { default as DatePicker } from "./RHFDatePicker";
 export { default as DateRangePicker } from "./RHFDateRangePicker";
 export { default as TimeInput } from "./RHFTimeInput";
+export { default as TimeRangeInput } from "./RHFTimeRangeInput";
 
 export { createFormProvider } from "./FormProvider";

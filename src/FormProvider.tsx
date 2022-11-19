@@ -27,6 +27,7 @@ import { createSwitchField } from "./RHFSwitch";
 import { createTextareaField } from "./RHFTextarea";
 import { createTextInputField } from "./RHFTextInput";
 import { createTimeInputField } from "./RHFTimeInput";
+import { createTimeRangeInputField } from "./RHFTimeRangeInput";
 
 type CreateFormProviderProps<T extends FieldValues> = FormProviderProps<T> & {
   onSubmit?: SubmitHandler<T>;
@@ -73,6 +74,7 @@ export const createFormProvider = <T extends FieldValues>() => {
   Form.DatePicker = createDatePickerField<T>();
   Form.DateRangePicker = createDateRangePickerField<T>();
   Form.TimeInput = createTimeInputField<T>();
+  Form.TimeRangeInput = createTimeRangeInputField<T>();
 
   return Form;
 };
