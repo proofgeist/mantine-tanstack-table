@@ -1,3 +1,4 @@
+import { DevTool } from "@hookform/devtools";
 import {
   FieldValues,
   FormProvider,
@@ -33,10 +34,11 @@ type CreateFormProviderProps<T extends FieldValues> = FormProviderProps<T> & {
   onError?: SubmitErrorHandler<T>;
 };
 export const createFormProvider = <T extends FieldValues>() => {
-  const Form = (props: CreateFormProviderProps<T>) => {
+  const Form = (props: CreateFormProviderProps<T> & { debug?: boolean }) => {
     const {
       onSubmit = (values) => console.log(values),
       onError = (err) => console.error(err),
+      debug = false,
       children,
       ...formMethods
     } = props;
@@ -44,6 +46,7 @@ export const createFormProvider = <T extends FieldValues>() => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           {children}
+          {debug && <DevTool control={formMethods.control} />}
         </form>
       </FormProvider>
     );

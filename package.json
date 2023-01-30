@@ -1,7 +1,7 @@
 {
   "name": "rhf-mantine",
   "private": false,
-  "version": "0.3.8",
+  "version": "0.4.0",
   "type": "module",
   "repository": "https://github.com/eluce2/rhf-mantine",
   "bugs": "https://github.com/eluce2/rhf-mantine/issues",
@@ -24,6 +24,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/devtools": "^4.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
