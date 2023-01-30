@@ -29,3 +29,8 @@ function RHFRadioGroup<T extends FieldValues = FieldValues>(props: Props<T>) {
   );
 }
 export default RHFRadioGroup;
+
+export const createRadioGroupField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFRadioGroup {...props} />;
+  return Field;
+};

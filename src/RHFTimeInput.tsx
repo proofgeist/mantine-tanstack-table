@@ -24,7 +24,7 @@ function RHFTimeInputField<T extends FieldValues = FieldValues>(
   return (
     <TimeInput
       {...field}
-      value={field.value ?? null}
+      value={(field.value as any) instanceof Date ? field.value : null}
       error={
         error
           ? error.message === "" && error.type === "required"

@@ -19,6 +19,7 @@ import { createMultiSelectField } from "./RHFMultiSelect";
 import { createNativeSelectField } from "./RHFNativeSelect";
 import { createNumberInputField } from "./RHFNumberInput";
 import { createPasswordInputField } from "./RHFPasswordInput";
+import { createRadioGroupField } from "./RHFRadioGroup";
 import { createRangeSliderField } from "./RHFRangeSlider";
 import { createSegmentedControlField } from "./RHFSegmentedControl";
 import { createSelectField } from "./RHFSelect";
@@ -71,6 +72,7 @@ export const createFormProvider = <T extends FieldValues>() => {
   Form.Slider = createSliderField<T>();
   Form.RangeSlider = createRangeSliderField<T>();
   Form.Switch = createSwitchField<T>();
+  Form.RadioGroup = createRadioGroupField<T>();
 
   Form.DatePicker = createDatePickerField<T>();
   Form.DateRangePicker = createDateRangePickerField<T>();
