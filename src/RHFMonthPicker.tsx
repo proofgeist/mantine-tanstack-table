@@ -1,5 +1,5 @@
 import React from "react";
-import { DatePicker, DatePickerProps } from "@mantine/dates";
+import { MonthPicker, MonthPickerProps } from "@mantine/dates";
 import {
   useController,
   FieldValues,
@@ -7,13 +7,13 @@ import {
 } from "react-hook-form";
 import { Input } from "@mantine/core";
 
-type Props<T extends FieldValues = FieldValues> = DatePickerProps & {
+type Props<T extends FieldValues = FieldValues> = MonthPickerProps & {
   name: UseControllerProps<T>["name"];
   rules?: UseControllerProps<T>["rules"];
   defaultValue?: UseControllerProps<T>["defaultValue"];
 };
 
-function RHFDatePicker<T extends FieldValues = FieldValues>(props: Props<T>) {
+function RHFMonthPicker<T extends FieldValues = FieldValues>(props: Props<T>) {
   const { name, rules, defaultValue, ...others } = props;
   const {
     field,
@@ -22,7 +22,7 @@ function RHFDatePicker<T extends FieldValues = FieldValues>(props: Props<T>) {
 
   return (
     <>
-      <DatePicker
+      <MonthPicker
         {...field}
         value={(field.value as any) instanceof Date ? field.value : null}
         onChange={(value) => field.onChange(value)}
@@ -38,9 +38,9 @@ function RHFDatePicker<T extends FieldValues = FieldValues>(props: Props<T>) {
     </>
   );
 }
-export default RHFDatePicker;
+export default RHFMonthPicker;
 
-export const createDatePicker = <T extends FieldValues>() => {
-  const Field = (props: Props<T>) => <RHFDatePicker {...props} />;
+export const createMonthPicker = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFMonthPicker {...props} />;
   return Field;
 };

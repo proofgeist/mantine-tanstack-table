@@ -1,18 +1,18 @@
 import React from "react";
-import { TimeRangeInput, TimeRangeInputProps } from "@mantine/dates";
+import { DateTimePicker, DateTimePickerProps } from "@mantine/dates";
 import {
   useController,
   FieldValues,
   UseControllerProps,
 } from "react-hook-form";
 
-type Props<T extends FieldValues = FieldValues> = TimeRangeInputProps & {
+type Props<T extends FieldValues = FieldValues> = DateTimePickerProps & {
   name: UseControllerProps<T>["name"];
   rules?: UseControllerProps<T>["rules"];
   defaultValue?: UseControllerProps<T>["defaultValue"];
 };
 
-function RHFTimeRangeInput<T extends FieldValues = FieldValues>(
+function RHFDateTimePickerInput<T extends FieldValues = FieldValues>(
   props: Props<T>
 ) {
   const { name, rules, defaultValue, ...others } = props;
@@ -22,9 +22,10 @@ function RHFTimeRangeInput<T extends FieldValues = FieldValues>(
   } = useController({ name, rules });
 
   return (
-    <TimeRangeInput
+    <DateTimePicker
       {...field}
-      value={field.value}
+      value={(field.value as any) instanceof Date ? field.value : null}
+      onChange={(value) => field.onChange(value)}
       error={
         error
           ? error.message === "" && error.type === "required"
@@ -36,9 +37,9 @@ function RHFTimeRangeInput<T extends FieldValues = FieldValues>(
     />
   );
 }
-export default RHFTimeRangeInput;
+export default RHFDateTimePickerInput;
 
-export const createTimeRangeInputField = <T extends FieldValues>() => {
-  const Field = (props: Props<T>) => <RHFTimeRangeInput {...props} />;
+export const createDateTimePickerField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFDateTimePickerInput {...props} />;
   return Field;
 };

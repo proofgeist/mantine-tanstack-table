@@ -1,18 +1,18 @@
 import React from "react";
-import { DateRangePicker, DateRangePickerProps } from "@mantine/dates";
+import { DatePickerInput, DatePickerInputProps } from "@mantine/dates";
 import {
   useController,
   FieldValues,
   UseControllerProps,
 } from "react-hook-form";
 
-type Props<T extends FieldValues = FieldValues> = DateRangePickerProps & {
+type Props<T extends FieldValues = FieldValues> = DatePickerInputProps & {
   name: UseControllerProps<T>["name"];
   rules?: UseControllerProps<T>["rules"];
   defaultValue?: UseControllerProps<T>["defaultValue"];
 };
 
-function RHFDateRangePicker<T extends FieldValues = FieldValues>(
+function RHFDatePickerInput<T extends FieldValues = FieldValues>(
   props: Props<T>
 ) {
   const { name, rules, defaultValue, ...others } = props;
@@ -22,9 +22,9 @@ function RHFDateRangePicker<T extends FieldValues = FieldValues>(
   } = useController({ name, rules });
 
   return (
-    <DateRangePicker
+    <DatePickerInput
       {...field}
-      value={field.value}
+      value={(field.value as any) instanceof Date ? field.value : null}
       onChange={(value) => field.onChange(value)}
       error={
         error
@@ -37,9 +37,9 @@ function RHFDateRangePicker<T extends FieldValues = FieldValues>(
     />
   );
 }
-export default RHFDateRangePicker;
+export default RHFDatePickerInput;
 
-export const createDateRangePickerField = <T extends FieldValues>() => {
-  const Field = (props: Props<T>) => <RHFDateRangePicker {...props} />;
+export const createDatePickerField = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFDatePickerInput {...props} />;
   return Field;
 };

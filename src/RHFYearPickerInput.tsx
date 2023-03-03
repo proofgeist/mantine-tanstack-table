@@ -1,19 +1,20 @@
 import React from "react";
-import { DatePicker, DatePickerProps } from "@mantine/dates";
+import { YearPickerInput, YearPickerInputProps } from "@mantine/dates";
 import {
   useController,
   FieldValues,
   UseControllerProps,
 } from "react-hook-form";
-import { Input } from "@mantine/core";
 
-type Props<T extends FieldValues = FieldValues> = DatePickerProps & {
+type Props<T extends FieldValues = FieldValues> = YearPickerInputProps & {
   name: UseControllerProps<T>["name"];
   rules?: UseControllerProps<T>["rules"];
   defaultValue?: UseControllerProps<T>["defaultValue"];
 };
 
-function RHFDatePicker<T extends FieldValues = FieldValues>(props: Props<T>) {
+function RHFYearPickerInput<T extends FieldValues = FieldValues>(
+  props: Props<T>
+) {
   const { name, rules, defaultValue, ...others } = props;
   const {
     field,
@@ -22,25 +23,25 @@ function RHFDatePicker<T extends FieldValues = FieldValues>(props: Props<T>) {
 
   return (
     <>
-      <DatePicker
+      <YearPickerInput
         {...field}
         value={(field.value as any) instanceof Date ? field.value : null}
         onChange={(value) => field.onChange(value)}
+        error={
+          error
+            ? error.message === "" && error.type === "required"
+              ? "Required"
+              : error.message
+            : false
+        }
         {...others}
       />
-      {error && (
-        <Input.Error>
-          {error.message === "" && error.type === "required"
-            ? "Required"
-            : error.message}
-        </Input.Error>
-      )}
     </>
   );
 }
-export default RHFDatePicker;
+export default RHFYearPickerInput;
 
-export const createDatePicker = <T extends FieldValues>() => {
-  const Field = (props: Props<T>) => <RHFDatePicker {...props} />;
+export const createYearPickerInput = <T extends FieldValues>() => {
+  const Field = (props: Props<T>) => <RHFYearPickerInput {...props} />;
   return Field;
 };

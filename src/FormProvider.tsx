@@ -11,10 +11,14 @@ import { createCheckboxField } from "./RHFCheckbox";
 import { createChipField } from "./RHFChip";
 import { createColorInputField } from "./RHFColorInput";
 import { createColorPickerField } from "./RHFColorPicker";
-import { createDatePickerField } from "./RHFDatePicker";
-import { createDateRangePickerField } from "./RHFDateRangePicker";
+import { createDateInputField } from "./RHFDateInput";
+import { createDatePicker } from "./RHFDatePicker";
+import { createDatePickerField } from "./RHFDatePickerInput";
+import { createDateTimePickerField } from "./RHFDateTimerPicker";
 import { createFileInputField } from "./RHFFileInput";
 import { createJsonInputField } from "./RHFJsonInput";
+import { createMonthPicker } from "./RHFMonthPicker";
+import { createMonthPickerInput } from "./RHFMonthPickerInput";
 import { createMultiSelectField } from "./RHFMultiSelect";
 import { createNativeSelectField } from "./RHFNativeSelect";
 import { createNumberInputField } from "./RHFNumberInput";
@@ -28,7 +32,8 @@ import { createSwitchField } from "./RHFSwitch";
 import { createTextareaField } from "./RHFTextarea";
 import { createTextInputField } from "./RHFTextInput";
 import { createTimeInputField } from "./RHFTimeInput";
-import { createTimeRangeInputField } from "./RHFTimeRangeInput";
+import { createYearPicker } from "./RHFYearPicker";
+import { createYearPickerInput } from "./RHFYearPickerInput";
 
 type CreateFormProviderProps<T extends FieldValues> = FormProviderProps<T> & {
   onSubmit?: SubmitHandler<T>;
@@ -74,10 +79,15 @@ export const createFormProvider = <T extends FieldValues>() => {
   Form.Switch = createSwitchField<T>();
   Form.RadioGroup = createRadioGroupField<T>();
 
-  Form.DatePicker = createDatePickerField<T>();
-  Form.DateRangePicker = createDateRangePickerField<T>();
+  Form.DateInput = createDateInputField<T>();
+  Form.DatePicker = createDatePicker<T>();
+  Form.DatePickerInput = createDatePickerField<T>();
+  Form.DateTimePickerInput = createDateTimePickerField<T>();
+  Form.MonthPicker = createMonthPicker<T>();
+  Form.MonthPickerInput = createMonthPickerInput<T>();
   Form.TimeInput = createTimeInputField<T>();
-  Form.TimeRangeInput = createTimeRangeInputField<T>();
+  Form.YearPicker = createYearPicker<T>();
+  Form.YearPickerInput = createYearPickerInput<T>();
 
   return Form;
 };
