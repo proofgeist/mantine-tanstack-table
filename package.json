@@ -1,7 +1,7 @@
 {
   "name": "rhf-mantine",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "repository": "https://github.com/eluce2/rhf-mantine",
   "bugs": "https://github.com/eluce2/rhf-mantine/issues",
