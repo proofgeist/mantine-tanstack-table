@@ -32,9 +32,9 @@ export default defineConfig({
     reportCompressedSize: true,
     lib: {
       entry: path.resolve(__dirname, "src/main.ts"),
-      name: "rhf-mantine",
+      name: "mantine-tanstack-table",
       formats: ["es", "umd"],
-      fileName: (format) => `rhf-mantine.${format}.js`,
+      fileName: (format) => `mantine-tanstack-table.${format}.js`,
     },
     rollupOptions: {
       external: ["react"],
