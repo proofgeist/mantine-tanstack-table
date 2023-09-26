@@ -1,5 +1,12 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.0.1
+
+### Patch Changes
+
+- 5d4cdd5: update default export
+- 5d4cdd5: Add fuzzy filter function
+
 ## 2.0.0
 
 ### Major Changes
