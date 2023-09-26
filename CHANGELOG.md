@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.0.3
+
+### Patch Changes
+
+- postcss config file
+
 ## 2.0.2
 
 ### Patch Changes
