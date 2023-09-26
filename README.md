@@ -27,6 +27,10 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 
+// this CSS only needs to be imported once in your entire app
+// and can be ignored if you want to use your own styles
+import "@proofgeist/mantine-tanstack-table/styles.css";
+
 type TData = { name: string };
 const columnHelper = createColumnHelper<TData>();
 
