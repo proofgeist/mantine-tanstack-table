@@ -1,7 +1,7 @@
 {
   "name": "@proofgeist/mantine-tanstack-table",
   "private": false,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "repository": "https://github.com/proofgeist/mantine-tanstack-table",
   "bugs": "https://github.com/proofgeist/mantine-tanstack-table/issues",
@@ -44,7 +44,7 @@
     "@rollup/plugin-typescript": "^11.1.4",
     "@types/lodash": "^4.14.199",
     "@types/node": "^20.7.0",
-    "@types/react": "^18.2.22",
+    "@types/react": "^18.2.23",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.1.0",
     "prettier": "3.0.3",
