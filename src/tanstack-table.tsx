@@ -93,7 +93,15 @@ export default function TanstackTable<T extends Table<any>>({
         overlayProps={{ blur: 1, radius: "md" }}
       />
 
-      <MTable {...rest}>
+      <MTable
+        {...rest}
+        highlightOnHover={!!onRowClick}
+        classNames={{
+          ...rest.classNames,
+          tfoot: classes.tfoot,
+          tbody: classes.tbody,
+        }}
+      >
         <MTable.Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <MTable.Tr key={headerGroup.id}>
