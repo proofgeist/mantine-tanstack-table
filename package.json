@@ -21,33 +21,35 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "changeset": "changeset"
   },
   "dependencies": {
-    "@mantine/core": "^6.0.8",
-    "@mantine/dates": "^6.0.8",
-    "@mantine/hooks": "^6.0.8",
-    "@tabler/icons-react": "^2.16.0",
-    "@tanstack/react-table": "^8.8.5",
-    "dayjs": "^1.11.7",
+    "@mantine/core": "^7.0.2",
+    "@mantine/dates": "^7.0.2",
+    "@mantine/hooks": "^7.0.2",
+    "@tabler/icons-react": "^2.35.0",
+    "@tanstack/react-table": "^8.10.3",
+    "@tanstack/table-core": "^8.10.3",
+    "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@emotion/react": "^11.10.4",
-    "@rollup/plugin-typescript": "^8.2.1",
-    "@types/lodash": "^4.14.194",
-    "@types/node": "^18.15.11",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-react": "^2.1.0",
-    "prettier": "2.6.2",
+    "@changesets/cli": "^2.26.2",
+    "@rollup/plugin-typescript": "^11.1.4",
+    "@types/lodash": "^4.14.199",
+    "@types/node": "^20.7.0",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.1.0",
+    "prettier": "3.0.3",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-typescript-paths": "^1.3.0",
-    "tslib": "^2.4.0",
-    "typescript": "^4.9.5",
-    "vite": "^3.1.0",
-    "vite-plugin-dts": "^2.0.2"
+    "rollup-plugin-typescript-paths": "^1.4.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.6.0"
   }
 }

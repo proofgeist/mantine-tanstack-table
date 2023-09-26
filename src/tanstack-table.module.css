@@ -1,0 +1,25 @@
+.tableRow {
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.tbody {
+	& > tr {
+		&:last-of-type {
+			&[data-with-row-border] {
+				--_tr-border-bottom: rem(1px) solid var(--_table-border-color) !important;
+			}
+		}
+	}
+}
+
+.tfoot {
+	& > tr {
+		&:last-of-type {
+			&[data-with-row-border] {
+				--_tr-border-bottom: none;
+			}
+		}
+	}
+}

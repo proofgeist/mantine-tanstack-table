@@ -1,18 +1,16 @@
-"use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 
 import { Column, RowData, Table } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-import {
-  ActionIcon,
-  SelectItem,
+import type {
+  ComboboxData,
+  MantineStyleProp,
   SelectProps,
-  Sx,
   TableProps,
   TextInputProps,
 } from "@mantine/core";
 import {
+  ActionIcon,
   Box,
   LoadingOverlay,
   Table as MTable,
@@ -20,7 +18,6 @@ import {
   Group,
   Text,
   Select,
-  createStyles,
   TextInput,
   MultiSelect,
 } from "@mantine/core";
@@ -28,6 +25,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { IconChevronDown, IconChevronUp, IconX } from "@tabler/icons-react";
 import { DatePickerInput, DatePickerInputProps } from "@mantine/dates";
 import { isEmpty } from "lodash";
+import classes from  "./tanstack-table.module.css"
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -38,7 +36,7 @@ declare module "@tanstack/table-core" {
         }
       | {
           type: "select" | "multi-select";
-          options: (string | SelectItem)[];
+          options: ComboboxData;
           placeholder?: string;
           selectProps?: Partial<Omit<SelectProps, "data">>;
         }
@@ -53,19 +51,6 @@ const defaultLabels = {
   of: "of",
 };
 
-const useStyles = createStyles((theme) => {
-  return {
-    tableRow: {
-      "&:hover": {
-        backgroundColor:
-          theme.colorScheme === "light"
-            ? theme.colors.gray[1]
-            : theme.colors.gray[9],
-      },
-      cursor: "pointer",
-    },
-  };
-});
 
 type Props<T extends Table<any>> = TableProps & {
   table: T;
@@ -76,7 +61,7 @@ type Props<T extends Table<any>> = TableProps & {
   columnFilters?: boolean;
   // labels?: Partial<typeof defaultLabels>;
   perPageOptions?: number[];
-  rowStyles?: (row: ReturnType<T["getRow"]>) => Sx | (Sx | undefined)[];
+  rowStyles?: (row: ReturnType<T["getRow"]>) => MantineStyleProp;
   stickyTop?: number | null;
 };
 
@@ -100,165 +85,138 @@ export default function TanstackTable<T extends Table<any>>({
   const totalRowCount = table.getCoreRowModel().rows.length;
 
   const textLabels = defaultLabels;
-  const { classes } = useStyles();
 
   return (
     <div style={{ position: "relative" }}>
-      <LoadingOverlay visible={loading} overlayBlur={1} radius="md" />
+      <LoadingOverlay
+				visible={loading}
+				overlayProps={{ blur: 1, radius: "md" }}
+			/>
 
       <MTable {...rest}>
-        <Box
-          component="thead"
-          sx={
-            stickyTop === null
-              ? { position: "unset" }
-              : {
-                  position: "sticky",
-                  top: stickyTop,
-                  backgroundColor: "white",
-                  zIndex: 100,
-                }
-          }
-        >
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Box
-                  component="th"
-                  key={header.id}
-                  style={{ width: header.column.getSize() }}
-                >
-                  {header.isPlaceholder ? null : (
-                    <>
-                      <Box
-                        style={{
-                          cursor:
-                            header.column.getCanSort() && sortable
-                              ? "pointer"
-                              : undefined,
-                          userSelect: header.column.getCanSort()
-                            ? "none"
-                            : undefined,
-                        }}
-                        sx={{
-                          display: "inline-flex",
-                          gap: 6,
-                          alignItems: "center",
-                        }}
-                        onClick={(e: unknown) => {
-                          const sortHandler =
-                            header.column.getToggleSortingHandler();
-                          if (sortable && sortHandler) sortHandler(e);
-                        }}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: <IconChevronUp size={18} />,
-                          desc: <IconChevronDown size={18} />,
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </Box>
-                      <Box>
-                        {header.column.getCanFilter() && columnFilters ? (
-                          <Filter column={header.column} table={table} />
-                        ) : null}
-                      </Box>
-                    </>
-                  )}
-                </Box>
-              ))}
-            </tr>
-          ))}
-        </Box>
-        <tbody>
-          {rows.rows.map((row) => (
-            <Box
-              component="tr"
-              key={row.id}
-              className={onRowClick && classes.tableRow}
-              onClick={() => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                onRowClick && onRowClick(row);
-              }}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              sx={rowStyles(row) ?? {}}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </Box>
-          ))}
-        </tbody>
-        {footerGroups.length > 0 && (
-          <tfoot>
-            {footerGroups.map((footerGroup) => (
-              <tr key={footerGroup.id}>
-                {footerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </tfoot>
-        )}
-      </MTable>
+      <MTable.Thead>
+					{table.getHeaderGroups().map((headerGroup) => (
+						<MTable.Tr key={headerGroup.id}>
+							{headerGroup.headers.map((header) => (
+								<MTable.Th key={header.id}>
+									{header.isPlaceholder ? null : (
+										<Box
+											style={{
+												display: "inline-flex",
+												gap: 6,
+												alignItems: "center",
+												cursor:
+													header.column.getCanSort() && sortable
+														? "pointer"
+														: undefined,
+												userSelect: header.column.getCanSort()
+													? "none"
+													: undefined,
+											}}
+											onClick={(e: unknown) => {
+												const sortHandler =
+													header.column.getToggleSortingHandler();
+												if (sortable && sortHandler) sortHandler(e);
+											}}
+										>
+											{flexRender(
+												header.column.columnDef.header,
+												header.getContext()
+											)}
+											{{
+												asc: <IconChevronUp size={18} />,
+												desc: <IconChevronDown size={18} />,
+											}[header.column.getIsSorted() as string] ?? null}
+										</Box>
+									)}
+								</MTable.Th>
+							))}
+						</MTable.Tr>
+					))}
+				</MTable.Thead>
+        <MTable.Tbody>
+					{rows.rows.map((row) => (
+						<MTable.Tr
+							key={row.id}
+							className={onRowClick && classes.tableRow}
+							onClick={() => {
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore
+								onRowClick && onRowClick(row);
+							}}
+						>
+							{row.getVisibleCells().map((cell) => (
+								<MTable.Td key={cell.id}>
+									{flexRender(cell.column.columnDef.cell, cell.getContext())}
+								</MTable.Td>
+							))}
+						</MTable.Tr>
+					))}
+				</MTable.Tbody>
+				{footerGroups.length > 0 && (
+					<MTable.Tfoot>
+						{footerGroups.map((footerGroup) => (
+							<MTable.Tr key={footerGroup.id}>
+								{footerGroup.headers.map((header) => (
+									<MTable.Th key={header.id}>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.footer,
+													header.getContext()
+											  )}
+									</MTable.Th>
+								))}
+							</MTable.Tr>
+						))}
+					</MTable.Tfoot>
+				)}
+			</MTable>
 
-      <Group position="apart">
-        {paginate ? (
-          <Text>
-            {table.getState().pagination.pageSize *
-              table.getState().pagination.pageIndex +
-              1}
-            -
-            {Math.min(
-              totalRowCount,
-              table.getState().pagination.pageSize *
-                (table.getState().pagination.pageIndex + 1)
-            )}{" "}
-            of {totalRowCount}{" "}
-            {totalRowCount === 1 ? textLabels.rowSingle : textLabels.rowPlural}
-          </Text>
-        ) : (
-          <Text>
-            {totalRowCount}{" "}
-            {totalRowCount === 1 ? textLabels.rowSingle : textLabels.rowPlural}
-          </Text>
-        )}
-        {paginate && (
-          <Group>
-            <Text>Per page: </Text>
-            <Select
-              data={perPageOptions
-                .sort((a, b) => a - b)
-                .map((n) => ({
-                  value: n.toString(),
-                  label: n.toString(),
-                }))}
-              sx={{ width: 80 }}
-              value={table.getState().pagination.pageSize.toString()}
-              onChange={(value) => value && table.setPageSize(parseInt(value))}
-            />
-            <Pagination
-              siblings={2}
-              total={table.getPageCount()}
-              value={table.getState().pagination.pageIndex + 1}
-              onChange={(page) => table.setPageIndex(page - 1)}
-            />
-          </Group>
-        )}
-      </Group>
+    	<Group justify="space-between">
+				{paginate ? (
+					<Text>
+						{table.getState().pagination.pageSize *
+							table.getState().pagination.pageIndex +
+							1}
+						-
+						{Math.min(
+							totalRowCount,
+							table.getState().pagination.pageSize *
+								(table.getState().pagination.pageIndex + 1)
+						)}{" "}
+						of {totalRowCount}{" "}
+						{totalRowCount === 1 ? textLabels.rowSingle : textLabels.rowPlural}
+					</Text>
+				) : (
+					<Text>
+						{totalRowCount}{" "}
+						{totalRowCount === 1 ? textLabels.rowSingle : textLabels.rowPlural}
+					</Text>
+				)}
+				{paginate && (
+					<Group>
+						<Text>Per page: </Text>
+						<Select
+							data={perPageOptions
+								.sort((a, b) => a - b)
+								.map((n) => ({
+									value: n.toString(),
+									label: n.toString(),
+								}))}
+							style={{ width: 80 }}
+							value={table.getState().pagination.pageSize.toString()}
+							onChange={(value) => value && table.setPageSize(parseInt(value))}
+						/>
+						<Pagination
+							siblings={2}
+							total={table.getPageCount()}
+							value={table.getState().pagination.pageIndex + 1}
+							onChange={(page) => table.setPageIndex(page - 1)}
+						/>
+					</Group>
+				)}
+			</Group>
     </div>
   );
 }
@@ -323,7 +281,7 @@ function Filter({
         clearable
         searchable
         placeholder="Filter..."
-        sx={{ fontWeight: 400 }}
+        style={{ fontWeight: 400 }}
         data={filterOptions.options}
         onChange={(value) => column.setFilterValue(value)}
         {...filterOptions.selectProps}
@@ -411,7 +369,7 @@ function DebouncedInput({
       {...props}
       value={value}
       rightSection={rightSection}
-      sx={{ fontWeight: 400 }}
+      style={{ fontWeight: 400 }}
       onChange={(e) => setValue(e.target.value)}
     />
   );
