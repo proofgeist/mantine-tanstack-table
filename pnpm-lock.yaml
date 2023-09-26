@@ -24,7 +24,7 @@ dependencies:
     specifier: ^8.10.3
     version: 8.10.3
   dayjs:
-    specifier: ^1.11.10
+    specifier: '>=1.11.10'
     version: 1.11.10
   lodash:
     specifier: ^4.17.21

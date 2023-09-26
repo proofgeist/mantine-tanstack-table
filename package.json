@@ -25,16 +25,18 @@
     "changeset": "changeset"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@tabler/icons-react": "^2.35.0",
+    "dayjs": "^1.11.10"
+  },
+  "peerDependencies": {
     "@mantine/core": "^7.0.2",
     "@mantine/dates": "^7.0.2",
     "@mantine/hooks": "^7.0.2",
-    "@tabler/icons-react": "^2.35.0",
     "@tanstack/react-table": "^8.10.3",
-    "@tanstack/table-core": "^8.10.3",
-    "dayjs": "^1.11.10",
-    "lodash": "^4.17.21",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@tanstack/table-core": "^8.10.3"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
