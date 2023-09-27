@@ -28,9 +28,7 @@ import {
   IconChevronUp,
   IconX,
 } from "@tabler/icons-react";
-import { DatePicker, DatesRangeValue, PickerInputBase } from "@mantine/dates";
-import dayjs from "dayjs";
-import classes from "./table.module.css";
+import classes from "./tanstack-table.module.css";
 import { isEmpty } from "lodash";
 
 declare module "@tanstack/table-core" {

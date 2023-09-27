@@ -1,7 +1,7 @@
 {
   "name": "@proofgeist/mantine-tanstack-table",
   "private": false,
-  "version": "2.1.0",
+  "version": "2.1.1",
   "type": "module",
   "repository": "https://github.com/proofgeist/mantine-tanstack-table",
   "bugs": "https://github.com/proofgeist/mantine-tanstack-table/issues",
@@ -30,7 +30,6 @@
   "dependencies": {
     "@tabler/icons-react": "^2.35.0",
     "@tanstack/match-sorter-utils": "^8.8.4",
-    "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

@@ -10,8 +10,7 @@ Initialize the `useReactTable` hook and pass it into this component to get a ful
 pnpm i @proofgeist/mantine-tanstack-table
 ```
 
-Requires `@tanstack/react-table` and `@mantine/core` as peer dependencies.  
-You may also need the `dayjs` and `@mantine/dates` as peers
+Requires `@tanstack/react-table` and `@mantine/core` as peer dependencies.
 
 ```bash
 pnpm install dayjs @mantine/dates
