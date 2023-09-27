@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.0
+
+### Minor Changes
+
+- add summary and sticky props
+
 ## 2.0.4
 
 ### Patch Changes

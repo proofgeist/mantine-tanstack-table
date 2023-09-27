@@ -1,47 +1,63 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { Column, RowData, Table } from "@tanstack/react-table";
-import { flexRender } from "@tanstack/react-table";
-import type {
-  ComboboxData,
-  MantineStyleProp,
-  SelectProps,
-  TableProps,
-  TextInputProps,
-} from "@mantine/core";
+import { Column, flexRender, RowData, Table } from "@tanstack/react-table";
 import {
-  ActionIcon,
   Box,
   LoadingOverlay,
   Table as MTable,
+  TableProps,
   Pagination,
   Group,
   Text,
   Select,
   TextInput,
+  TextInputProps,
   MultiSelect,
+  Flex,
+  SelectProps,
+  ActionIcon,
+  MultiSelectProps,
+  MantineStyleProp,
+  AppShell,
+  ComboboxData,
 } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconChevronUp, IconX } from "@tabler/icons-react";
-import { DatePickerInput, DatePickerInputProps } from "@mantine/dates";
+import {
+  IconChevronDown,
+  IconChevronRight,
+  IconChevronUp,
+  IconX,
+} from "@tabler/icons-react";
+import { DatePicker, DatesRangeValue, PickerInputBase } from "@mantine/dates";
+import dayjs from "dayjs";
+import classes from "./table.module.css";
 import { isEmpty } from "lodash";
-import classes from "./tanstack-table.module.css";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
+    cellStyle?: React.CSSProperties;
+    headerStyle?: React.CSSProperties;
     filter?:
+      | {
+          type: "expiration";
+          placeholder?: string;
+        }
       | {
           type: "text" | "number";
           placeholder?: string;
         }
       | {
-          type: "select" | "multi-select";
+          type: "select";
           options: ComboboxData;
           placeholder?: string;
           selectProps?: Partial<Omit<SelectProps, "data">>;
         }
-      | { type: "date"; datePickerProps?: DatePickerInputProps };
+      | {
+          type: "multi-select";
+          options: ComboboxData;
+          placeholder?: string;
+          selectProps?: Partial<Omit<MultiSelectProps, "data">>;
+        };
   }
 }
 
@@ -52,6 +68,7 @@ const defaultLabels = {
   of: "of",
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props<T extends Table<any>> = TableProps & {
   table: T;
   onRowClick?: (row: ReturnType<T["getRow"]>) => void;
@@ -63,8 +80,11 @@ type Props<T extends Table<any>> = TableProps & {
   perPageOptions?: number[];
   rowStyles?: (row: ReturnType<T["getRow"]>) => MantineStyleProp;
   stickyTop?: number | null;
+  showSummary?: boolean;
+  header?: React.ReactNode;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function TanstackTable<T extends Table<any>>({
   table,
   onRowClick,
@@ -72,19 +92,30 @@ export default function TanstackTable<T extends Table<any>>({
   loading = false,
   sortable = false,
   columnFilters = false,
+  stickyTop = null,
+  rowStyles = () => [],
+  showSummary = false,
+  header,
 
   // labels = {},
   perPageOptions = [10, 25, 50],
-  stickyTop = null,
-  rowStyles = () => [],
   ...rest
 }: Props<T>) {
   const footerGroups = table.getFooterGroups();
   const rows =
     paginate || sortable ? table.getRowModel() : table.getCoreRowModel();
-  const totalRowCount = table.getCoreRowModel().rows.length;
+  const totalRowCount = table.getFilteredRowModel().rows.length;
 
   const textLabels = defaultLabels;
+
+  // if a filter lowers the page count and you are now viewing a page out of range, reset
+  const watchedPageCount = table.getPageCount();
+  useEffect(() => {
+    if (table.getState().pagination.pageIndex > watchedPageCount - 1) {
+      table.resetPageIndex();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedPageCount]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -92,50 +123,81 @@ export default function TanstackTable<T extends Table<any>>({
         visible={loading}
         overlayProps={{ blur: 1, radius: "md" }}
       />
-
-      <MTable
-        {...rest}
-        highlightOnHover={!!onRowClick}
-        classNames={{
-          ...rest.classNames,
-          tfoot: classes.tfoot,
-          tbody: classes.tbody,
-        }}
-      >
-        <MTable.Thead>
+      <MTable {...rest} highlightOnHover={!!onRowClick}>
+        <MTable.Thead
+          style={
+            stickyTop === null
+              ? {}
+              : {
+                  position: "sticky",
+                  top: stickyTop,
+                  zIndex: 10,
+                  // backgroundColor: ,
+                }
+          }
+        >
+          {header && (
+            <MTable.Tr>
+              <MTable.Th
+                style={{ padding: 0 }}
+                colSpan={table.getHeaderGroups()[0]?.headers.length}
+              >
+                {header}
+              </MTable.Th>
+            </MTable.Tr>
+          )}
           {table.getHeaderGroups().map((headerGroup) => (
-            <MTable.Tr key={headerGroup.id}>
+            <MTable.Tr
+              key={headerGroup.id}
+              style={{
+                position: "relative",
+                top: "-1px",
+              }}
+            >
               {headerGroup.headers.map((header) => (
-                <MTable.Th key={header.id}>
+                <MTable.Th
+                  key={header.id}
+                  style={{
+                    ...header.getContext().column.columnDef.meta?.headerStyle,
+                    width: header.getSize(),
+                  }}
+                >
                   {header.isPlaceholder ? null : (
-                    <Box
-                      style={{
-                        display: "inline-flex",
-                        gap: 6,
-                        alignItems: "center",
-                        cursor:
-                          header.column.getCanSort() && sortable
-                            ? "pointer"
+                    <>
+                      <Box
+                        style={{
+                          cursor:
+                            header.column.getCanSort() && sortable
+                              ? "pointer"
+                              : undefined,
+                          userSelect: header.column.getCanSort()
+                            ? "none"
                             : undefined,
-                        userSelect: header.column.getCanSort()
-                          ? "none"
-                          : undefined,
-                      }}
-                      onClick={(e: unknown) => {
-                        const sortHandler =
-                          header.column.getToggleSortingHandler();
-                        if (sortable && sortHandler) sortHandler(e);
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {{
-                        asc: <IconChevronUp size={18} />,
-                        desc: <IconChevronDown size={18} />,
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </Box>
+                          display: "inline-flex",
+                          gap: 6,
+                          alignItems: "center",
+                        }}
+                        onClick={(e: unknown) => {
+                          const sortHandler =
+                            header.column.getToggleSortingHandler();
+                          if (sortable && sortHandler) sortHandler(e);
+                        }}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {{
+                          asc: <IconChevronUp size={18} />,
+                          desc: <IconChevronDown size={18} />,
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </Box>
+                      <Box>
+                        {header.column.getCanFilter() && columnFilters ? (
+                          <Filter column={header.column} table={table} />
+                        ) : null}
+                      </Box>
+                    </>
                   )}
                 </MTable.Th>
               ))}
@@ -152,10 +214,47 @@ export default function TanstackTable<T extends Table<any>>({
                 // @ts-ignore
                 onRowClick && onRowClick(row);
               }}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+
+              style={rowStyles}
             >
               {row.getVisibleCells().map((cell) => (
-                <MTable.Td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                <MTable.Td
+                  key={cell.id}
+                  style={{
+                    width: cell.column.getSize(),
+                    ...cell.getContext().column.columnDef.meta?.cellStyle,
+                  }}
+                >
+                  {cell.getIsGrouped() ? (
+                    <Flex
+                      align="center"
+                      gap={4}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        row.getToggleExpandedHandler()();
+                      }}
+                    >
+                      {row.getIsExpanded() ? (
+                        <IconChevronDown size="1rem" />
+                      ) : (
+                        <IconChevronRight size="1rem" />
+                      )}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}{" "}
+                      ({row.subRows.length})
+                    </Flex>
+                  ) : cell.getIsAggregated() ? (
+                    flexRender(
+                      cell.column.columnDef.aggregatedCell,
+                      cell.getContext()
+                    )
+                  ) : cell.getIsPlaceholder() ? null : (
+                    flexRender(cell.column.columnDef.cell, cell.getContext())
+                  )}
                 </MTable.Td>
               ))}
             </MTable.Tr>
@@ -166,14 +265,17 @@ export default function TanstackTable<T extends Table<any>>({
             {footerGroups.map((footerGroup) => (
               <MTable.Tr key={footerGroup.id}>
                 {footerGroup.headers.map((header) => (
-                  <MTable.Th key={header.id}>
+                  <MTable.Td
+                    key={header.id}
+                    style={header.getContext().column.columnDef.meta?.cellStyle}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.footer,
                           header.getContext()
                         )}
-                  </MTable.Th>
+                  </MTable.Td>
                 ))}
               </MTable.Tr>
             ))}
@@ -181,71 +283,92 @@ export default function TanstackTable<T extends Table<any>>({
         )}
       </MTable>
 
-      <Group justify="space-between">
-        {paginate ? (
-          <Text>
-            {table.getState().pagination.pageSize *
-              table.getState().pagination.pageIndex +
-              1}
-            -
-            {Math.min(
-              totalRowCount,
-              table.getState().pagination.pageSize *
-                (table.getState().pagination.pageIndex + 1)
-            )}{" "}
-            of {totalRowCount}{" "}
-            {totalRowCount === 1 ? textLabels.rowSingle : textLabels.rowPlural}
-          </Text>
-        ) : (
-          <Text>
-            {totalRowCount}{" "}
-            {totalRowCount === 1 ? textLabels.rowSingle : textLabels.rowPlural}
-          </Text>
-        )}
-        {paginate && (
-          <Group>
-            <Text>Per page: </Text>
-            <Select
-              data={perPageOptions
-                .sort((a, b) => a - b)
-                .map((n) => ({
-                  value: n.toString(),
-                  label: n.toString(),
-                }))}
-              style={{ width: 80 }}
-              value={table.getState().pagination.pageSize.toString()}
-              onChange={(value) => value && table.setPageSize(parseInt(value))}
-            />
-            <Pagination
-              siblings={2}
-              total={table.getPageCount()}
-              value={table.getState().pagination.pageIndex + 1}
-              onChange={(page) => table.setPageIndex(page - 1)}
-            />
-          </Group>
-        )}
-      </Group>
+      {showSummary || paginate ? (
+        <AppShell.Footer
+          p="md"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {showSummary ? (
+            paginate ? (
+              <Text>
+                {table.getState().pagination.pageSize *
+                  table.getState().pagination.pageIndex +
+                  1}
+                -
+                {Math.min(
+                  totalRowCount,
+                  table.getState().pagination.pageSize *
+                    (table.getState().pagination.pageIndex + 1)
+                )}{" "}
+                of {totalRowCount}{" "}
+                {totalRowCount === 1
+                  ? textLabels.rowSingle
+                  : textLabels.rowPlural}
+              </Text>
+            ) : (
+              <Text>
+                {totalRowCount}{" "}
+                {totalRowCount === 1
+                  ? textLabels.rowSingle
+                  : textLabels.rowPlural}
+              </Text>
+            )
+          ) : null}
+          {paginate && (
+            <Group>
+              <Text>Per page: </Text>
+              <Select
+                data={perPageOptions
+                  .sort((a, b) => a - b)
+                  .map((n) => ({
+                    value: n.toString(),
+                    label: n.toString(),
+                  }))}
+                style={{ width: 80 }}
+                value={table.getState().pagination.pageSize.toString()}
+                onChange={(value) =>
+                  value && table.setPageSize(parseInt(value))
+                }
+              />
+              <Pagination
+                siblings={2}
+                total={table.getPageCount()}
+                value={table.getState().pagination.pageIndex + 1}
+                onChange={(page) => table.setPageIndex(page - 1)}
+              />
+            </Group>
+          )}
+        </AppShell.Footer>
+      ) : (
+        <> </>
+      )}
     </div>
   );
 }
 
 function Filter({
   column,
-  table,
 }: {
   column: Column<any, unknown>;
   table: Table<any>;
 }) {
-  const [value, setValue] = useState("");
-  const [debounced] = useDebouncedValue(value, 500);
+  const columnFilterValue = column.getFilterValue();
+  const [stringValue, setStringValue] = useState<string | null>(
+    (columnFilterValue as string) ?? null
+  );
+  const [stringArrayValue, setStringArrayValue] = useState<string[] | null>(
+    (columnFilterValue as string[]) ?? null
+  );
 
   const filterOptions = column.columnDef.meta?.filter ?? { type: "text" };
 
-  useEffect(() => {
-    column.setFilterValue(debounced);
-  }, [column, debounced]);
-
-  const columnFilterValue = column.getFilterValue();
+  // useEffect(() => {
+  // 	column.setFilterValue(debounced);
+  // }, [column, debounced]);
 
   if (filterOptions.type === "number")
     return (
@@ -283,48 +406,63 @@ function Filter({
       </div>
     );
 
-  if (filterOptions.type === "select")
+  if (filterOptions.type === "select") {
     return (
       <Select
-        clearable
+        rightSection={
+          <ActionIcon onClick={() => column.setFilterValue(null)}>
+            <IconX size="1rem" />
+          </ActionIcon>
+        }
         searchable
+        value={
+          stringValue ?? typeof columnFilterValue === "string"
+            ? (columnFilterValue as string)
+            : null
+        }
         placeholder="Filter..."
         style={{ fontWeight: 400 }}
         data={filterOptions.options}
-        onChange={(value) => column.setFilterValue(value)}
-        {...filterOptions.selectProps}
-      />
-    );
-  if (filterOptions.type === "multi-select")
-    return (
-      <MultiSelect
-        clearable
-        searchable
-        placeholder="Filter..."
-        sx={{ fontWeight: 400 }}
-        data={filterOptions.options}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        onChange={(values) => {
-          Array.isArray(values)
-            ? column.setFilterValue(values)
-            : column.setFilterValue([values]);
+        styles={{ input: { minWidth: 0 } }}
+        onChange={(value) => {
+          setStringValue(value as string);
+          column.setFilterValue(value);
         }}
         {...filterOptions.selectProps}
       />
     );
-
-  if (filterOptions.type === "date")
+  }
+  if (filterOptions.type === "multi-select") {
     return (
-      <DatePickerInput
-        popoverProps={{ withinPortal: true }}
+      <MultiSelect
+        rightSection={
+          <ActionIcon onClick={() => column.setFilterValue(null)}>
+            <IconX size="1rem" />
+          </ActionIcon>
+        }
+        searchable
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        value={stringArrayValue ?? null}
         placeholder="Filter..."
-        clearable
-        valueFormat="M/D/YY"
-        onChange={(date) => column.setFilterValue(date)}
-        {...filterOptions.datePickerProps}
+        sx={{ fontWeight: 400 }}
+        data={filterOptions.options}
+        styles={{ input: { minWidth: 0 } }}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        onChange={(values) => {
+          if (Array.isArray(values)) {
+            setStringArrayValue(values);
+            column.setFilterValue(values);
+          } else {
+            setStringArrayValue([values]);
+            column.setFilterValue([values]);
+          }
+        }}
+        {...filterOptions.selectProps}
       />
     );
+  }
 
   return (
     <DebouncedInput
@@ -359,6 +497,7 @@ function DebouncedInput({
     }, debounce);
 
     return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const rightSection = isEmpty(value) ? null : (
