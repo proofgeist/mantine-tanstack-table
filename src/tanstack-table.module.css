@@ -1,25 +1,32 @@
 .tableRow {
-	&:hover {
-		cursor: pointer;
-	}
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .tbody {
-	& > tr {
-		&:last-of-type {
-			&[data-with-row-border] {
-				--_tr-border-bottom: rem(1px) solid var(--_table-border-color) !important;
-			}
-		}
-	}
+  & > tr {
+    &:last-of-type {
+      &[data-with-row-border] {
+        --_tr-border-bottom: rem(1px) solid var(--_table-border-color) !important;
+      }
+    }
+  }
 }
 
 .tfoot {
-	& > tr {
-		&:last-of-type {
-			&[data-with-row-border] {
-				--_tr-border-bottom: none;
-			}
-		}
-	}
+  & > tr {
+    &:last-of-type {
+      &[data-with-row-border] {
+        --_tr-border-bottom: none;
+      }
+    }
+  }
+}
+
+.stickyFoot {
+  position: absolute;
+  z-index: 10;
+  background-color: var(--mantine-color-body);
+  width: 100%;
 }

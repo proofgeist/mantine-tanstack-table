@@ -21,6 +21,9 @@ import {
   MantineStyleProp,
   AppShell,
   ComboboxData,
+  ScrollArea,
+  Container,
+  Space,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -30,6 +33,7 @@ import {
 } from "@tabler/icons-react";
 import classes from "./tanstack-table.module.css";
 import { isEmpty } from "lodash";
+import { useElementOuterSize } from "./hooks";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -78,8 +82,11 @@ type Props<T extends Table<any>> = TableProps & {
   perPageOptions?: number[];
   rowStyles?: (row: ReturnType<T["getRow"]>) => MantineStyleProp;
   stickyTop?: number | null;
+  stickyFoot?: number | null;
+  stickyBorderRadius?: string | null;
   showSummary?: boolean;
   header?: React.ReactNode;
+  scrollHeight?: string | number;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,8 +98,11 @@ export default function TanstackTable<T extends Table<any>>({
   sortable = false,
   columnFilters = false,
   stickyTop = null,
+  stickyFoot = null,
+  stickyBorderRadius = null,
   rowStyles = () => [],
   showSummary = false,
+  scrollHeight = "100%",
   header,
 
   // labels = {},
@@ -100,9 +110,28 @@ export default function TanstackTable<T extends Table<any>>({
   ...rest
 }: Props<T>) {
   const footerGroups = table.getFooterGroups();
+  console.log(footerGroups);
   const rows =
     paginate || sortable ? table.getRowModel() : table.getCoreRowModel();
   const totalRowCount = table.getFilteredRowModel().rows.length;
+
+  const {
+    ref: scrollViewportRef,
+    width: scrollViewportWidth,
+    height: scrollViewportHeight,
+  } = useElementOuterSize<HTMLDivElement>();
+
+  const { ref: headerRef, height: headerHeight } =
+    useElementOuterSize<HTMLTableSectionElement>();
+  const {
+    ref: tableRef,
+    width: tableWidth,
+    height: tableHeight,
+  } = useElementOuterSize<HTMLTableElement>();
+  const { ref: footerRef, height: footerHeight } =
+    useElementOuterSize<HTMLTableSectionElement>();
+  const { ref: paginationRef, height: paginationHeight } =
+    useElementOuterSize<HTMLDivElement>();
 
   const textLabels = defaultLabels;
 
@@ -121,229 +150,253 @@ export default function TanstackTable<T extends Table<any>>({
         visible={loading}
         overlayProps={{ blur: 1, radius: "md" }}
       />
-      <MTable {...rest} highlightOnHover={!!onRowClick}>
-        <MTable.Thead
-          style={
-            stickyTop === null
-              ? {}
-              : {
-                  position: "sticky",
-                  top: stickyTop,
-                  zIndex: 10,
-                  // backgroundColor: ,
-                }
-          }
-        >
-          {header && (
-            <MTable.Tr>
-              <MTable.Th
-                style={{ padding: 0 }}
-                colSpan={table.getHeaderGroups()[0]?.headers.length}
-              >
-                {header}
-              </MTable.Th>
-            </MTable.Tr>
-          )}
-          {table.getHeaderGroups().map((headerGroup) => (
-            <MTable.Tr
-              key={headerGroup.id}
-              style={{
-                position: "relative",
-                top: "-1px",
-              }}
-            >
-              {headerGroup.headers.map((header) => (
+      <ScrollArea
+        h={scrollHeight}
+        viewportRef={scrollViewportRef}
+        styles={{
+          scrollbar: {
+            marginTop: stickyTop !== null ? headerHeight : 0,
+            marginBottom: stickyFoot !== null ? paginationHeight : 0,
+          },
+        }}
+      >
+        <MTable {...rest} highlightOnHover={!!onRowClick} ref={tableRef}>
+          <MTable.Thead
+            ref={headerRef}
+            style={
+              stickyTop === null
+                ? {}
+                : {
+                    position: "sticky",
+                    top: stickyTop,
+                    zIndex: 10,
+                    backgroundColor: "var(--mantine-color-body)",
+                    borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
+                    //TODO fix this border radius, currently not being respected
+                  }
+            }
+          >
+            {header && (
+              <MTable.Tr>
                 <MTable.Th
-                  key={header.id}
-                  style={{
-                    ...header.getContext().column.columnDef.meta?.headerStyle,
-                    width: header.getSize(),
-                  }}
+                  style={{ padding: 0 }}
+                  colSpan={table.getHeaderGroups()[0]?.headers.length}
                 >
-                  {header.isPlaceholder ? null : (
-                    <>
-                      <Box
-                        style={{
-                          cursor:
-                            header.column.getCanSort() && sortable
-                              ? "pointer"
-                              : undefined,
-                          userSelect: header.column.getCanSort()
-                            ? "none"
-                            : undefined,
-                          display: "inline-flex",
-                          gap: 6,
-                          alignItems: "center",
-                        }}
-                        onClick={(e: unknown) => {
-                          const sortHandler =
-                            header.column.getToggleSortingHandler();
-                          if (sortable && sortHandler) sortHandler(e);
-                        }}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: <IconChevronUp size={18} />,
-                          desc: <IconChevronDown size={18} />,
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </Box>
-                      <Box>
-                        {header.column.getCanFilter() && columnFilters ? (
-                          <Filter column={header.column} table={table} />
-                        ) : null}
-                      </Box>
-                    </>
-                  )}
+                  {header}
                 </MTable.Th>
-              ))}
-            </MTable.Tr>
-          ))}
-        </MTable.Thead>
-        <MTable.Tbody>
-          {rows.rows.map((row) => (
-            <MTable.Tr
-              key={row.id}
-              className={onRowClick && classes.tableRow}
-              onClick={() => {
+              </MTable.Tr>
+            )}
+            {table.getHeaderGroups().map((headerGroup) => (
+              <MTable.Tr
+                key={headerGroup.id}
+                style={{
+                  position: "relative",
+                  top: "-1px",
+                }}
+              >
+                {headerGroup.headers.map((header) => (
+                  <MTable.Th
+                    key={header.id}
+                    style={{
+                      ...header.getContext().column.columnDef.meta?.headerStyle,
+                      width: header.getSize(),
+                    }}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <>
+                        <Box
+                          style={{
+                            cursor:
+                              header.column.getCanSort() && sortable
+                                ? "pointer"
+                                : undefined,
+                            userSelect: header.column.getCanSort()
+                              ? "none"
+                              : undefined,
+                            display: "inline-flex",
+                            gap: 6,
+                            alignItems: "center",
+                          }}
+                          onClick={(e: unknown) => {
+                            const sortHandler =
+                              header.column.getToggleSortingHandler();
+                            if (sortable && sortHandler) sortHandler(e);
+                          }}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {{
+                            asc: <IconChevronUp size={18} />,
+                            desc: <IconChevronDown size={18} />,
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </Box>
+                        <Box>
+                          {header.column.getCanFilter() && columnFilters ? (
+                            <Filter column={header.column} table={table} />
+                          ) : null}
+                        </Box>
+                      </>
+                    )}
+                  </MTable.Th>
+                ))}
+              </MTable.Tr>
+            ))}
+          </MTable.Thead>
+
+          <MTable.Tbody>
+            {rows.rows.map((row) => (
+              <MTable.Tr
+                key={row.id}
+                className={onRowClick && classes.tableRow}
+                onClick={() => {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  onRowClick && onRowClick(row);
+                }}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                onRowClick && onRowClick(row);
-              }}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-
-              style={rowStyles}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <MTable.Td
-                  key={cell.id}
-                  style={{
-                    width: cell.column.getSize(),
-                    ...cell.getContext().column.columnDef.meta?.cellStyle,
-                  }}
-                >
-                  {cell.getIsGrouped() ? (
-                    <Flex
-                      align="center"
-                      gap={4}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        row.getToggleExpandedHandler()();
-                      }}
-                    >
-                      {row.getIsExpanded() ? (
-                        <IconChevronDown size="1rem" />
-                      ) : (
-                        <IconChevronRight size="1rem" />
-                      )}
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}{" "}
-                      ({row.subRows.length})
-                    </Flex>
-                  ) : cell.getIsAggregated() ? (
-                    flexRender(
-                      cell.column.columnDef.aggregatedCell,
-                      cell.getContext()
-                    )
-                  ) : cell.getIsPlaceholder() ? null : (
-                    flexRender(cell.column.columnDef.cell, cell.getContext())
-                  )}
-                </MTable.Td>
-              ))}
-            </MTable.Tr>
-          ))}
-        </MTable.Tbody>
-        {footerGroups.length > 0 && (
-          <MTable.Tfoot>
-            {footerGroups.map((footerGroup) => (
-              <MTable.Tr key={footerGroup.id}>
-                {footerGroup.headers.map((header) => (
+                style={rowStyles}
+              >
+                {row.getVisibleCells().map((cell) => (
                   <MTable.Td
-                    key={header.id}
-                    style={header.getContext().column.columnDef.meta?.cellStyle}
+                    key={cell.id}
+                    style={{
+                      width: cell.column.getSize(),
+                      ...cell.getContext().column.columnDef.meta?.cellStyle,
+                    }}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext()
+                    {cell.getIsGrouped() ? (
+                      <Flex
+                        align="center"
+                        gap={4}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          row.getToggleExpandedHandler()();
+                        }}
+                      >
+                        {row.getIsExpanded() ? (
+                          <IconChevronDown size="1rem" />
+                        ) : (
+                          <IconChevronRight size="1rem" />
                         )}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}{" "}
+                        ({row.subRows.length})
+                      </Flex>
+                    ) : cell.getIsAggregated() ? (
+                      flexRender(
+                        cell.column.columnDef.aggregatedCell,
+                        cell.getContext()
+                      )
+                    ) : cell.getIsPlaceholder() ? null : (
+                      flexRender(cell.column.columnDef.cell, cell.getContext())
+                    )}
                   </MTable.Td>
                 ))}
               </MTable.Tr>
             ))}
-          </MTable.Tfoot>
-        )}
-      </MTable>
+          </MTable.Tbody>
 
-      {showSummary || paginate ? (
-        <AppShell.Footer
-          p="md"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          {showSummary ? (
-            paginate ? (
-              <Text>
-                {table.getState().pagination.pageSize *
-                  table.getState().pagination.pageIndex +
-                  1}
-                -
-                {Math.min(
-                  totalRowCount,
-                  table.getState().pagination.pageSize *
-                    (table.getState().pagination.pageIndex + 1)
-                )}{" "}
-                of {totalRowCount}{" "}
-                {totalRowCount === 1
-                  ? textLabels.rowSingle
-                  : textLabels.rowPlural}
-              </Text>
-            ) : (
-              <Text>
-                {totalRowCount}{" "}
-                {totalRowCount === 1
-                  ? textLabels.rowSingle
-                  : textLabels.rowPlural}
-              </Text>
-            )
-          ) : null}
-          {paginate && (
-            <Group>
-              <Text>Per page: </Text>
-              <Select
-                data={perPageOptions
-                  .sort((a, b) => a - b)
-                  .map((n) => ({
-                    value: n.toString(),
-                    label: n.toString(),
-                  }))}
-                style={{ width: 80 }}
-                value={table.getState().pagination.pageSize.toString()}
-                onChange={(value) =>
-                  value && table.setPageSize(parseInt(value))
-                }
-              />
-              <Pagination
-                siblings={2}
-                total={table.getPageCount()}
-                value={table.getState().pagination.pageIndex + 1}
-                onChange={(page) => table.setPageIndex(page - 1)}
-              />
-            </Group>
+          {footerGroups.length > 0 && (
+            <MTable.Tfoot ref={footerRef}>
+              {footerGroups.map((footerGroup) => (
+                <MTable.Tr key={footerGroup.id}>
+                  {footerGroup.headers.map((header) => (
+                    <MTable.Td
+                      key={header.id}
+                      style={
+                        header.getContext().column.columnDef.meta?.cellStyle
+                      }
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.footer,
+                            header.getContext()
+                          )}
+                    </MTable.Td>
+                  ))}
+                </MTable.Tr>
+              ))}
+            </MTable.Tfoot>
           )}
-        </AppShell.Footer>
-      ) : (
-        <> </>
-      )}
+        </MTable>
+        {showSummary || paginate ? (
+          <>
+            <Space h={paginationHeight} />
+            <Container
+              p="sm"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                bottom: stickyFoot !== null ? stickyFoot : 0,
+                borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
+              }}
+              ref={paginationRef}
+              className={stickyFoot !== null ? classes.stickyFoot : ""}
+            >
+              {showSummary ? (
+                paginate ? (
+                  <Text>
+                    {table.getState().pagination.pageSize *
+                      table.getState().pagination.pageIndex +
+                      1}
+                    -
+                    {Math.min(
+                      totalRowCount,
+                      table.getState().pagination.pageSize *
+                        (table.getState().pagination.pageIndex + 1)
+                    )}{" "}
+                    of {totalRowCount}{" "}
+                    {totalRowCount === 1
+                      ? textLabels.rowSingle
+                      : textLabels.rowPlural}
+                  </Text>
+                ) : (
+                  <Text>
+                    {totalRowCount}{" "}
+                    {totalRowCount === 1
+                      ? textLabels.rowSingle
+                      : textLabels.rowPlural}
+                  </Text>
+                )
+              ) : null}
+              {paginate && (
+                <Group>
+                  <Text>Per page: </Text>
+                  <Select
+                    data={perPageOptions
+                      .sort((a, b) => a - b)
+                      .map((n) => ({
+                        value: n.toString(),
+                        label: n.toString(),
+                      }))}
+                    style={{ width: 80 }}
+                    value={table.getState().pagination.pageSize.toString()}
+                    onChange={(value) =>
+                      value && table.setPageSize(parseInt(value))
+                    }
+                  />
+                  <Pagination
+                    siblings={2}
+                    total={table.getPageCount()}
+                    value={table.getState().pagination.pageIndex + 1}
+                    onChange={(page) => table.setPageIndex(page - 1)}
+                    ref={paginationRef}
+                  />
+                </Group>
+              )}
+            </Container>
+          </>
+        ) : (
+          <> </>
+        )}
+      </ScrollArea>
     </div>
   );
 }
