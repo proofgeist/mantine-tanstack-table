@@ -87,6 +87,7 @@ type Props<T extends Table<any>> = TableProps & {
   showSummary?: boolean;
   header?: React.ReactNode;
   scrollHeight?: string | number;
+  rowCount?: number;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,6 +105,7 @@ export default function TanstackTable<T extends Table<any>>({
   showSummary = false,
   scrollHeight = "100%",
   header,
+  rowCount,
 
   // labels = {},
   perPageOptions = [10, 25, 50],
@@ -112,7 +114,7 @@ export default function TanstackTable<T extends Table<any>>({
   const footerGroups = table.getFooterGroups();
   const rows =
     paginate || sortable ? table.getRowModel() : table.getCoreRowModel();
-  const totalRowCount = table.getFilteredRowModel().rows.length;
+  const totalRowCount = rowCount ?? table.getFilteredRowModel().rows.length;
 
   const {
     ref: scrollViewportRef,
@@ -159,7 +161,12 @@ export default function TanstackTable<T extends Table<any>>({
           },
         }}
       >
-        <MTable {...rest} highlightOnHover={!!onRowClick} ref={tableRef}>
+        <MTable
+          {...rest}
+          highlightOnHover={!!onRowClick}
+          ref={tableRef}
+          captionSide="bottom"
+        >
           <MTable.Thead
             ref={headerRef}
             style={
@@ -298,6 +305,9 @@ export default function TanstackTable<T extends Table<any>>({
                 ))}
               </MTable.Tr>
             ))}
+            {showSummary || paginate ? (
+              <MTable.Tr h={paginationHeight}></MTable.Tr>
+            ) : null}
           </MTable.Tbody>
 
           {footerGroups.length > 0 && (
@@ -329,11 +339,8 @@ export default function TanstackTable<T extends Table<any>>({
               })}
             </MTable.Tfoot>
           )}
-        </MTable>
-        {showSummary || paginate ? (
-          <>
-            <Space h={paginationHeight} />
-            <Container
+          {showSummary || paginate ? (
+            <MTable.Caption
               p="sm"
               style={{
                 display: "flex",
@@ -396,11 +403,11 @@ export default function TanstackTable<T extends Table<any>>({
                   />
                 </Group>
               )}
-            </Container>
-          </>
-        ) : (
-          <> </>
-        )}
+            </MTable.Caption>
+          ) : (
+            <> </>
+          )}
+        </MTable>
       </ScrollArea>
     </div>
   );
