@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.2
+
+### Patch Changes
+
+- 4a4f631: added support for manual pagination and sticky header and footer
+
 ## 2.1.1
 
 ### Patch Changes
