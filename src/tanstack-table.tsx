@@ -110,7 +110,6 @@ export default function TanstackTable<T extends Table<any>>({
   ...rest
 }: Props<T>) {
   const footerGroups = table.getFooterGroups();
-  console.log(footerGroups);
   const rows =
     paginate || sortable ? table.getRowModel() : table.getCoreRowModel();
   const totalRowCount = table.getFilteredRowModel().rows.length;
@@ -303,25 +302,31 @@ export default function TanstackTable<T extends Table<any>>({
 
           {footerGroups.length > 0 && (
             <MTable.Tfoot ref={footerRef}>
-              {footerGroups.map((footerGroup) => (
-                <MTable.Tr key={footerGroup.id}>
-                  {footerGroup.headers.map((header) => (
-                    <MTable.Td
-                      key={header.id}
-                      style={
-                        header.getContext().column.columnDef.meta?.cellStyle
-                      }
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.footer,
-                            header.getContext()
-                          )}
-                    </MTable.Td>
-                  ))}
-                </MTable.Tr>
-              ))}
+              {footerGroups.map((footerGroup) => {
+                return footerGroup.headers.some((header) => {
+                  return (
+                    !header.isPlaceholder && header.column.columnDef.footer
+                  );
+                }) ? (
+                  <MTable.Tr key={footerGroup.id}>
+                    {footerGroup.headers.map((header) => (
+                      <MTable.Td
+                        key={header.id}
+                        style={
+                          header.getContext().column.columnDef.meta?.cellStyle
+                        }
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.footer,
+                              header.getContext()
+                            )}
+                      </MTable.Td>
+                    ))}
+                  </MTable.Tr>
+                ) : null;
+              })}
             </MTable.Tfoot>
           )}
         </MTable>
