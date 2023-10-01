@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.3
+
+### Patch Changes
+
+- switch to non-module css
+
 ## 2.1.2
 
 ### Patch Changes

@@ -31,7 +31,7 @@ import {
   IconChevronUp,
   IconX,
 } from "@tabler/icons-react";
-import classes from "./tanstack-table.module.css";
+import "./style.css";
 import { isEmpty } from "lodash";
 import { useElementOuterSize } from "./hooks";
 
@@ -147,6 +147,7 @@ export default function TanstackTable<T extends Table<any>>({
 
   return (
     <div style={{ position: "relative" }}>
+      hi mom
       <LoadingOverlay
         visible={loading}
         overlayProps={{ blur: 1, radius: "md" }}
@@ -250,12 +251,11 @@ export default function TanstackTable<T extends Table<any>>({
               </MTable.Tr>
             ))}
           </MTable.Thead>
-
           <MTable.Tbody>
             {rows.rows.map((row) => (
               <MTable.Tr
                 key={row.id}
-                className={onRowClick && classes.tableRow}
+                data-on-row-click={!!onRowClick}
                 onClick={() => {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
@@ -309,7 +309,6 @@ export default function TanstackTable<T extends Table<any>>({
               <MTable.Tr h={paginationHeight}></MTable.Tr>
             ) : null}
           </MTable.Tbody>
-
           {footerGroups.length > 0 && (
             <MTable.Tfoot ref={footerRef}>
               {footerGroups.map((footerGroup) => {
@@ -350,7 +349,7 @@ export default function TanstackTable<T extends Table<any>>({
                 borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
               }}
               ref={paginationRef}
-              className={stickyFoot !== null ? classes.stickyFoot : ""}
+              data-sticky-foot={stickyFoot !== null}
             >
               {showSummary ? (
                 paginate ? (
