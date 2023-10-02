@@ -147,7 +147,6 @@ export default function TanstackTable<T extends Table<any>>({
 
   return (
     <div style={{ position: "relative" }}>
-      hi mom
       <LoadingOverlay
         visible={loading}
         overlayProps={{ blur: 1, radius: "md" }}
