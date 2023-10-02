@@ -167,6 +167,76 @@ export default function TanstackTable<T extends Table<any>>({
           ref={tableRef}
           captionSide="bottom"
         >
+          {showSummary || paginate ? (
+            <MTable.Caption
+              p="sm"
+              style={{
+                bottom: stickyFoot !== null ? stickyFoot : 0,
+                borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
+              }}
+              ref={paginationRef}
+              data-sticky-foot={stickyFoot !== null}
+            >
+              <Group
+                justify={showSummary && paginate ? "space-between" : "end"}
+                align="center"
+              >
+                {showSummary ? (
+                  paginate ? (
+                    <Text>
+                      {table.getState().pagination.pageSize *
+                        table.getState().pagination.pageIndex +
+                        1}
+                      -
+                      {Math.min(
+                        totalRowCount,
+                        table.getState().pagination.pageSize *
+                          (table.getState().pagination.pageIndex + 1)
+                      )}{" "}
+                      of {totalRowCount}{" "}
+                      {totalRowCount === 1
+                        ? textLabels.rowSingle
+                        : textLabels.rowPlural}
+                    </Text>
+                  ) : (
+                    <Text>
+                      {totalRowCount}{" "}
+                      {totalRowCount === 1
+                        ? textLabels.rowSingle
+                        : textLabels.rowPlural}
+                    </Text>
+                  )
+                ) : null}
+                {paginate && (
+                  <Group>
+                    <Text>Per page: </Text>
+                    <Select
+                      data={perPageOptions
+                        .sort((a, b) => a - b)
+                        .map((n) => ({
+                          value: n.toString(),
+                          label: n.toString(),
+                        }))}
+                      style={{ width: 80 }}
+                      value={table.getState().pagination.pageSize.toString()}
+                      onChange={(value) =>
+                        value && table.setPageSize(parseInt(value))
+                      }
+                    />
+                    <Pagination
+                      siblings={2}
+                      total={table.getPageCount()}
+                      value={table.getState().pagination.pageIndex + 1}
+                      onChange={(page) => table.setPageIndex(page - 1)}
+                      ref={paginationRef}
+                    />
+                  </Group>
+                )}
+              </Group>
+            </MTable.Caption>
+          ) : (
+            <> </>
+          )}
           <MTable.Thead
             ref={headerRef}
             style={
@@ -304,107 +374,44 @@ export default function TanstackTable<T extends Table<any>>({
                 ))}
               </MTable.Tr>
             ))}
-            {showSummary || paginate ? (
+            {(showSummary || paginate) && stickyFoot !== null ? (
               <MTable.Tr h={paginationHeight}></MTable.Tr>
             ) : null}
           </MTable.Tbody>
-          {footerGroups.length > 0 && (
-            <MTable.Tfoot ref={footerRef}>
-              {footerGroups.map((footerGroup) => {
-                return footerGroup.headers.some((header) => {
-                  return (
-                    !header.isPlaceholder && header.column.columnDef.footer
-                  );
-                }) ? (
-                  <MTable.Tr key={footerGroup.id}>
-                    {footerGroup.headers.map((header) => (
-                      <MTable.Td
-                        key={header.id}
-                        style={
-                          header.getContext().column.columnDef.meta?.cellStyle
-                        }
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.footer,
-                              header.getContext()
-                            )}
-                      </MTable.Td>
-                    ))}
-                  </MTable.Tr>
-                ) : null;
-              })}
-            </MTable.Tfoot>
-          )}
-          {showSummary || paginate ? (
-            <MTable.Caption
-              p="sm"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                bottom: stickyFoot !== null ? stickyFoot : 0,
-                borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
-              }}
-              ref={paginationRef}
-              data-sticky-foot={stickyFoot !== null}
-            >
-              {showSummary ? (
-                paginate ? (
-                  <Text>
-                    {table.getState().pagination.pageSize *
-                      table.getState().pagination.pageIndex +
-                      1}
-                    -
-                    {Math.min(
-                      totalRowCount,
-                      table.getState().pagination.pageSize *
-                        (table.getState().pagination.pageIndex + 1)
-                    )}{" "}
-                    of {totalRowCount}{" "}
-                    {totalRowCount === 1
-                      ? textLabels.rowSingle
-                      : textLabels.rowPlural}
-                  </Text>
-                ) : (
-                  <Text>
-                    {totalRowCount}{" "}
-                    {totalRowCount === 1
-                      ? textLabels.rowSingle
-                      : textLabels.rowPlural}
-                  </Text>
-                )
-              ) : null}
-              {paginate && (
-                <Group>
-                  <Text>Per page: </Text>
-                  <Select
-                    data={perPageOptions
-                      .sort((a, b) => a - b)
-                      .map((n) => ({
-                        value: n.toString(),
-                        label: n.toString(),
-                      }))}
-                    style={{ width: 80 }}
-                    value={table.getState().pagination.pageSize.toString()}
-                    onChange={(value) =>
-                      value && table.setPageSize(parseInt(value))
-                    }
-                  />
-                  <Pagination
-                    siblings={2}
-                    total={table.getPageCount()}
-                    value={table.getState().pagination.pageIndex + 1}
-                    onChange={(page) => table.setPageIndex(page - 1)}
-                    ref={paginationRef}
-                  />
-                </Group>
-              )}
-            </MTable.Caption>
-          ) : (
-            <> </>
-          )}
+          {footerGroups.length > 0 &&
+            footerGroups.some((footerGroup) => {
+              return footerGroup.headers.some((header) => {
+                return !header.isPlaceholder && header.column.columnDef.footer;
+              });
+            }) && (
+              <MTable.Tfoot ref={footerRef}>
+                {footerGroups.map((footerGroup) => {
+                  return footerGroup.headers.some((header) => {
+                    return (
+                      !header.isPlaceholder && header.column.columnDef.footer
+                    );
+                  }) ? (
+                    <MTable.Tr key={footerGroup.id}>
+                      {footerGroup.headers.map((header) => (
+                        <MTable.Td
+                          key={header.id}
+                          style={
+                            header.getContext().column.columnDef.meta?.cellStyle
+                          }
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.footer,
+                                header.getContext()
+                              )}
+                        </MTable.Td>
+                      ))}
+                    </MTable.Tr>
+                  ) : null;
+                })}
+              </MTable.Tfoot>
+            )}
         </MTable>
       </ScrollArea>
     </div>
