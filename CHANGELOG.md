@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.5
+
+### Patch Changes
+
+- fixing caption setup
+
 ## 2.1.4
 
 ### Patch Changes
