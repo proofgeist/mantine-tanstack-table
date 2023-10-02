@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.4
+
+### Patch Changes
+
+- removing hi mom
+
 ## 2.1.3
 
 ### Patch Changes
