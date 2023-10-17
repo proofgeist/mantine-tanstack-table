@@ -161,258 +161,288 @@ export default function TanstackTable<T extends Table<any>>({
           },
         }}
       >
-        <MTable
-          {...rest}
-          highlightOnHover={!!onRowClick}
-          ref={tableRef}
-          captionSide="bottom"
+        <Box
+          className="proofgeist-table-Box"
+          pb={
+            (showSummary || paginate) && stickyFoot !== null
+              ? paginationHeight - 1
+              : 0
+          }
+          mt={stickyTop !== null ? "-2px" : 0}
         >
-          {showSummary || paginate ? (
-            <MTable.Caption
-              p="sm"
-              style={{
-                bottom: stickyFoot !== null ? stickyFoot : 0,
-                borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
-              }}
-              ref={paginationRef}
-              data-sticky-foot={stickyFoot !== null}
-            >
-              <Group
-                justify={showSummary && paginate ? "space-between" : "end"}
-                align="center"
-              >
-                {showSummary ? (
-                  paginate ? (
-                    <Text>
-                      {table.getState().pagination.pageSize *
-                        table.getState().pagination.pageIndex +
-                        1}
-                      -
-                      {Math.min(
-                        totalRowCount,
-                        table.getState().pagination.pageSize *
-                          (table.getState().pagination.pageIndex + 1)
-                      )}{" "}
-                      of {totalRowCount}{" "}
-                      {totalRowCount === 1
-                        ? textLabels.rowSingle
-                        : textLabels.rowPlural}
-                    </Text>
-                  ) : (
-                    <Text>
-                      {totalRowCount}{" "}
-                      {totalRowCount === 1
-                        ? textLabels.rowSingle
-                        : textLabels.rowPlural}
-                    </Text>
-                  )
-                ) : null}
-                {paginate && (
-                  <Group>
-                    <Text>Per page: </Text>
-                    <Select
-                      data={perPageOptions
-                        .sort((a, b) => a - b)
-                        .map((n) => ({
-                          value: n.toString(),
-                          label: n.toString(),
-                        }))}
-                      style={{ width: 80 }}
-                      value={table.getState().pagination.pageSize.toString()}
-                      onChange={(value) =>
-                        value && table.setPageSize(parseInt(value))
-                      }
-                    />
-                    <Pagination
-                      siblings={2}
-                      total={table.getPageCount()}
-                      value={table.getState().pagination.pageIndex + 1}
-                      onChange={(page) => table.setPageIndex(page - 1)}
-                      ref={paginationRef}
-                    />
-                  </Group>
-                )}
-              </Group>
-            </MTable.Caption>
-          ) : (
-            <> </>
-          )}
-          <MTable.Thead
-            ref={headerRef}
-            style={
-              stickyTop === null
-                ? {}
-                : {
-                    position: "sticky",
-                    top: stickyTop,
-                    zIndex: 10,
-                    backgroundColor: "var(--mantine-color-body)",
-                    borderRadius: stickyBorderRadius ? stickyBorderRadius : 0,
-                    //TODO fix this border radius, currently not being respected
-                  }
-            }
+          <MTable
+            {...rest}
+            highlightOnHover={!!onRowClick}
+            ref={tableRef}
+            captionSide="bottom"
           >
-            {header && (
-              <MTable.Tr>
-                <MTable.Th
-                  style={{ padding: 0 }}
-                  colSpan={table.getHeaderGroups()[0]?.headers.length}
-                >
-                  {header}
-                </MTable.Th>
-              </MTable.Tr>
-            )}
-            {table.getHeaderGroups().map((headerGroup) => (
-              <MTable.Tr
-                key={headerGroup.id}
-                style={{
-                  position: "relative",
-                  top: "-1px",
-                }}
+            {showSummary || paginate ? (
+              <MTable.Caption
+                p="sm"
+                style={
+                  stickyFoot !== null
+                    ? {
+                        position: "absolute",
+                        width: "100%",
+                        bottom: stickyFoot,
+                        zIndex: 10,
+                        borderTop: "1px solid var(--_table-border-color)",
+                        backgroundColor: "var(--mantine-color-body)",
+                        borderRadius: stickyBorderRadius
+                          ? `0 0 ${stickyBorderRadius} ${stickyBorderRadius}`
+                          : 0,
+                      }
+                    : {}
+                }
+                ref={paginationRef}
+                data-sticky-foot={stickyFoot !== null}
               >
-                {headerGroup.headers.map((header) => (
+                <Group
+                  justify={showSummary && paginate ? "space-between" : "end"}
+                  align="center"
+                >
+                  {showSummary ? (
+                    paginate ? (
+                      <Text>
+                        {table.getState().pagination.pageSize *
+                          table.getState().pagination.pageIndex +
+                          1}
+                        -
+                        {Math.min(
+                          totalRowCount,
+                          table.getState().pagination.pageSize *
+                            (table.getState().pagination.pageIndex + 1)
+                        )}{" "}
+                        of {totalRowCount}{" "}
+                        {totalRowCount === 1
+                          ? textLabels.rowSingle
+                          : textLabels.rowPlural}
+                      </Text>
+                    ) : (
+                      <Text>
+                        {totalRowCount}{" "}
+                        {totalRowCount === 1
+                          ? textLabels.rowSingle
+                          : textLabels.rowPlural}
+                      </Text>
+                    )
+                  ) : null}
+                  {paginate && (
+                    <Group>
+                      <Text>Per page: </Text>
+                      <Select
+                        data={perPageOptions
+                          .sort((a, b) => a - b)
+                          .map((n) => ({
+                            value: n.toString(),
+                            label: n.toString(),
+                          }))}
+                        style={{ width: 80 }}
+                        value={table.getState().pagination.pageSize.toString()}
+                        onChange={(value) =>
+                          value && table.setPageSize(parseInt(value))
+                        }
+                      />
+                      <Pagination
+                        siblings={2}
+                        total={table.getPageCount()}
+                        value={table.getState().pagination.pageIndex + 1}
+                        onChange={(page) => table.setPageIndex(page - 1)}
+                        ref={paginationRef}
+                      />
+                    </Group>
+                  )}
+                </Group>
+              </MTable.Caption>
+            ) : (
+              <> </>
+            )}
+            <MTable.Thead
+              ref={headerRef}
+              style={
+                stickyTop === null
+                  ? {}
+                  : {
+                      position: "sticky",
+                      top: stickyTop,
+                      zIndex: 10,
+                      backgroundColor: "var(--mantine-color-body)",
+                      borderBottom: "1px solid var(--_table-border-color)",
+                      borderRadius: stickyBorderRadius
+                        ? `${stickyBorderRadius} ${stickyBorderRadius} 0 0`
+                        : 0,
+                      //TODO fix this border radius, currently not being respected
+                    }
+              }
+            >
+              {header && (
+                <MTable.Tr>
                   <MTable.Th
-                    key={header.id}
-                    style={{
-                      ...header.getContext().column.columnDef.meta?.headerStyle,
-                      width: header.getSize(),
-                    }}
+                    style={{ padding: 0 }}
+                    colSpan={table.getHeaderGroups()[0]?.headers.length}
                   >
-                    {header.isPlaceholder ? null : (
-                      <>
-                        <Box
-                          style={{
-                            cursor:
-                              header.column.getCanSort() && sortable
-                                ? "pointer"
-                                : undefined,
-                            userSelect: header.column.getCanSort()
-                              ? "none"
-                              : undefined,
-                            display: "inline-flex",
-                            gap: 6,
-                            alignItems: "center",
-                          }}
-                          onClick={(e: unknown) => {
-                            const sortHandler =
-                              header.column.getToggleSortingHandler();
-                            if (sortable && sortHandler) sortHandler(e);
-                          }}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {{
-                            asc: <IconChevronUp size={18} />,
-                            desc: <IconChevronDown size={18} />,
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </Box>
-                        <Box>
-                          {header.column.getCanFilter() && columnFilters ? (
-                            <Filter column={header.column} table={table} />
-                          ) : null}
-                        </Box>
-                      </>
-                    )}
+                    {header}
                   </MTable.Th>
-                ))}
-              </MTable.Tr>
-            ))}
-          </MTable.Thead>
-          <MTable.Tbody>
-            {rows.rows.map((row) => (
-              <MTable.Tr
-                key={row.id}
-                data-on-row-click={!!onRowClick}
-                onClick={() => {
+                </MTable.Tr>
+              )}
+              {table.getHeaderGroups().map((headerGroup) => (
+                <MTable.Tr
+                  key={headerGroup.id}
+                  style={{
+                    position: "relative",
+                    boxSizing: "border-box",
+                    top: "-1px",
+                    boxShadow: "inset 0 -1px 0 var(--_table-border-color)",
+                  }}
+                >
+                  {headerGroup.headers.map((header) => (
+                    <MTable.Th
+                      key={header.id}
+                      style={{
+                        ...header.getContext().column.columnDef.meta
+                          ?.headerStyle,
+                        width: header.getSize(),
+                      }}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <>
+                          <Box
+                            style={{
+                              cursor:
+                                header.column.getCanSort() && sortable
+                                  ? "pointer"
+                                  : undefined,
+                              userSelect: header.column.getCanSort()
+                                ? "none"
+                                : undefined,
+                              display: "inline-flex",
+                              gap: 6,
+                              alignItems: "center",
+                            }}
+                            onClick={(e: unknown) => {
+                              const sortHandler =
+                                header.column.getToggleSortingHandler();
+                              if (sortable && sortHandler) sortHandler(e);
+                            }}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {{
+                              asc: <IconChevronUp size={18} />,
+                              desc: <IconChevronDown size={18} />,
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </Box>
+                          <Box>
+                            {header.column.getCanFilter() && columnFilters ? (
+                              <Filter column={header.column} table={table} />
+                            ) : null}
+                          </Box>
+                        </>
+                      )}
+                    </MTable.Th>
+                  ))}
+                </MTable.Tr>
+              ))}
+            </MTable.Thead>
+            <MTable.Tbody>
+              {rows.rows.map((row) => (
+                <MTable.Tr
+                  key={row.id}
+                  data-on-row-click={!!onRowClick}
+                  onClick={() => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    onRowClick && onRowClick(row);
+                  }}
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  onRowClick && onRowClick(row);
-                }}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                style={rowStyles}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <MTable.Td
-                    key={cell.id}
-                    style={{
-                      width: cell.column.getSize(),
-                      ...cell.getContext().column.columnDef.meta?.cellStyle,
-                    }}
-                  >
-                    {cell.getIsGrouped() ? (
-                      <Flex
-                        align="center"
-                        gap={4}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          row.getToggleExpandedHandler()();
-                        }}
-                      >
-                        {row.getIsExpanded() ? (
-                          <IconChevronDown size="1rem" />
-                        ) : (
-                          <IconChevronRight size="1rem" />
-                        )}
-                        {flexRender(
+                  style={rowStyles}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <MTable.Td
+                      key={cell.id}
+                      style={{
+                        width: cell.column.getSize(),
+                        ...cell.getContext().column.columnDef.meta?.cellStyle,
+                      }}
+                    >
+                      {cell.getIsGrouped() ? (
+                        <Flex
+                          align="center"
+                          gap={4}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            row.getToggleExpandedHandler()();
+                          }}
+                        >
+                          {row.getIsExpanded() ? (
+                            <IconChevronDown size="1rem" />
+                          ) : (
+                            <IconChevronRight size="1rem" />
+                          )}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}{" "}
+                          ({row.subRows.length})
+                        </Flex>
+                      ) : cell.getIsAggregated() ? (
+                        flexRender(
+                          cell.column.columnDef.aggregatedCell,
+                          cell.getContext()
+                        )
+                      ) : cell.getIsPlaceholder() ? null : (
+                        flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
-                        )}{" "}
-                        ({row.subRows.length})
-                      </Flex>
-                    ) : cell.getIsAggregated() ? (
-                      flexRender(
-                        cell.column.columnDef.aggregatedCell,
-                        cell.getContext()
-                      )
-                    ) : cell.getIsPlaceholder() ? null : (
-                      flexRender(cell.column.columnDef.cell, cell.getContext())
-                    )}
-                  </MTable.Td>
-                ))}
-              </MTable.Tr>
-            ))}
-            {(showSummary || paginate) && stickyFoot !== null ? (
-              <MTable.Tr h={paginationHeight}></MTable.Tr>
-            ) : null}
-          </MTable.Tbody>
-          {footerGroups.length > 0 &&
-            footerGroups.some((footerGroup) => {
-              return footerGroup.headers.some((header) => {
-                return !header.isPlaceholder && header.column.columnDef.footer;
-              });
-            }) && (
-              <MTable.Tfoot ref={footerRef}>
-                {footerGroups.map((footerGroup) => {
-                  return footerGroup.headers.some((header) => {
-                    return (
-                      !header.isPlaceholder && header.column.columnDef.footer
-                    );
-                  }) ? (
-                    <MTable.Tr key={footerGroup.id}>
-                      {footerGroup.headers.map((header) => (
-                        <MTable.Td
-                          key={header.id}
-                          style={
-                            header.getContext().column.columnDef.meta?.cellStyle
-                          }
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.footer,
-                                header.getContext()
-                              )}
-                        </MTable.Td>
-                      ))}
-                    </MTable.Tr>
-                  ) : null;
-                })}
-              </MTable.Tfoot>
-            )}
-        </MTable>
+                        )
+                      )}
+                    </MTable.Td>
+                  ))}
+                </MTable.Tr>
+              ))}
+            </MTable.Tbody>
+            {footerGroups.length > 0 &&
+              footerGroups.some((footerGroup) => {
+                return footerGroup.headers.some((header) => {
+                  return (
+                    !header.isPlaceholder && header.column.columnDef.footer
+                  );
+                });
+              }) && (
+                <MTable.Tfoot ref={footerRef}>
+                  {footerGroups.map((footerGroup) => {
+                    return footerGroup.headers.some((header) => {
+                      return (
+                        !header.isPlaceholder && header.column.columnDef.footer
+                      );
+                    }) ? (
+                      <MTable.Tr key={footerGroup.id}>
+                        {footerGroup.headers.map((header) => (
+                          <MTable.Td
+                            key={header.id}
+                            style={
+                              header.getContext().column.columnDef.meta
+                                ?.cellStyle
+                            }
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.footer,
+                                  header.getContext()
+                                )}
+                          </MTable.Td>
+                        ))}
+                      </MTable.Tr>
+                    ) : null;
+                  })}
+                </MTable.Tfoot>
+              )}
+          </MTable>
+        </Box>
       </ScrollArea>
     </div>
   );
