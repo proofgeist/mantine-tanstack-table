@@ -290,9 +290,11 @@ export default function TanstackTable<T extends Table<any>>({
                   key={headerGroup.id}
                   style={{
                     position: "relative",
-                    boxSizing: "border-box",
                     top: "-1px",
-                    boxShadow: "inset 0 -1px 0 var(--_table-border-color)",
+                    boxShadow:
+                      stickyTop !== null
+                        ? "inset 0 -1px 0 var(--_table-border-color)"
+                        : "",
                   }}
                 >
                   {headerGroup.headers.map((header) => (
