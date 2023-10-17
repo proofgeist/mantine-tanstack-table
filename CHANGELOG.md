@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.6
+
+### Patch Changes
+
+- e74c4ad: fixing sticky head and foot
+
 ## 2.1.5
 
 ### Patch Changes
