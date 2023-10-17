@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.7
+
+### Patch Changes
+
+- ee57162: fixing double border on no stickyTop
+
 ## 2.1.6
 
 ### Patch Changes
