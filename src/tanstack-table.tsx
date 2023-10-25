@@ -199,6 +199,7 @@ export default function TanstackTable<T extends Table<any>>({
               >
                 <Group
                   justify={showSummary && paginate ? "space-between" : "end"}
+                  wrap="nowrap"
                   align="center"
                 >
                   {showSummary ? (

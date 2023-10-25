@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.8
+
+### Patch Changes
+
+- add nowrap to summary line
+
 ## 2.1.7
 
 ### Patch Changes
