@@ -1,7 +1,7 @@
 {
   "name": "@proofgeist/mantine-tanstack-table",
   "private": false,
-  "version": "2.1.8",
+  "version": "2.1.9",
   "type": "module",
   "repository": "https://github.com/proofgeist/mantine-tanstack-table",
   "bugs": "https://github.com/proofgeist/mantine-tanstack-table/issues",
