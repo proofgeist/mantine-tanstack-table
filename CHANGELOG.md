@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.1.9
+
+### Patch Changes
+
+- ab29da3: removing whitespace node to fix dom nesting validation
+
 ## 2.1.8
 
 ### Patch Changes
