@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.0
+
+### Minor Changes
+
+- add ability to render a subcomponent
+
 ## 2.1.8
 
 ### Patch Changes

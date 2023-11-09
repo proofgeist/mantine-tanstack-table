@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 
-import { Column, flexRender, RowData, Table } from "@tanstack/react-table";
+import { Column, flexRender, Row, RowData, Table } from "@tanstack/react-table";
 import {
   Box,
   LoadingOverlay,
@@ -73,6 +73,7 @@ const defaultLabels = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props<T extends Table<any>> = TableProps & {
   table: T;
+  renderSubComponent?: (props: { row: Row<T> }) => ReactElement;
   onRowClick?: (row: ReturnType<T["getRow"]>) => void;
   paginate?: boolean;
   sortable?: boolean;
@@ -106,6 +107,7 @@ export default function TanstackTable<T extends Table<any>>({
   scrollHeight = "100%",
   header,
   rowCount,
+  renderSubComponent,
 
   // labels = {},
   perPageOptions = [10, 25, 50],
@@ -404,6 +406,13 @@ export default function TanstackTable<T extends Table<any>>({
                       )}
                     </MTable.Td>
                   ))}
+                  {!!renderSubComponent && row.getIsExpanded() && (
+                    <MTable.Tr>
+                      <MTable.Td colSpan={row.getVisibleCells().length}>
+                        {renderSubComponent({ row })}
+                      </MTable.Td>
+                    </MTable.Tr>
+                  )}
                 </MTable.Tr>
               ))}
             </MTable.Tbody>
