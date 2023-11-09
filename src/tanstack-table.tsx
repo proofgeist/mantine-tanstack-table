@@ -1,7 +1,7 @@
 "use client";
 import React, { ReactElement, useEffect, useState } from "react";
 
-import { Column, flexRender, Row, RowData, Table } from "@tanstack/react-table";
+import { Column, flexRender, RowData, Table } from "@tanstack/react-table";
 import {
   Box,
   LoadingOverlay,
@@ -19,11 +19,8 @@ import {
   ActionIcon,
   MultiSelectProps,
   MantineStyleProp,
-  AppShell,
   ComboboxData,
   ScrollArea,
-  Container,
-  Space,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -73,7 +70,9 @@ const defaultLabels = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props<T extends Table<any>> = TableProps & {
   table: T;
-  renderSubComponent?: (props: { row: Row<T> }) => ReactElement;
+  renderSubComponent?: (props: {
+    row: ReturnType<T["getRow"]>;
+  }) => ReactElement;
   onRowClick?: (row: ReturnType<T["getRow"]>) => void;
   paginate?: boolean;
   sortable?: boolean;
@@ -355,13 +354,9 @@ export default function TanstackTable<T extends Table<any>>({
                   key={row.id}
                   data-on-row-click={!!onRowClick}
                   onClick={() => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    onRowClick && onRowClick(row);
+                    onRowClick && onRowClick(row as ReturnType<T["getRow"]>);
                   }}
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  style={rowStyles}
+                  style={rowStyles as MantineStyleProp}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <MTable.Td
@@ -407,7 +402,9 @@ export default function TanstackTable<T extends Table<any>>({
                   {!!renderSubComponent && row.getIsExpanded() && (
                     <MTable.Tr>
                       <MTable.Td colSpan={row.getVisibleCells().length}>
-                        {renderSubComponent({ row })}
+                        {renderSubComponent({
+                          row: row as ReturnType<T["getRow"]>,
+                        })}
                       </MTable.Td>
                     </MTable.Tr>
                   )}

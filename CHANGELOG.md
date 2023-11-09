@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.2
+
+### Patch Changes
+
+- fix types
+
 ## 2.2.0
 
 ### Minor Changes
