@@ -257,9 +257,7 @@ export default function TanstackTable<T extends Table<any>>({
                   )}
                 </Group>
               </MTable.Caption>
-            ) : (
-              <> </>
-            )}
+            ) : null}
             <MTable.Thead
               ref={headerRef}
               style={
