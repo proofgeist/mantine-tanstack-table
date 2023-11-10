@@ -516,11 +516,6 @@ function Filter({
   if (filterOptions.type === "select") {
     return (
       <Select
-        rightSection={
-          <ActionIcon onClick={() => column.setFilterValue(null)}>
-            <IconX size="1rem" />
-          </ActionIcon>
-        }
         searchable
         value={
           stringValue ?? typeof columnFilterValue === "string"
@@ -528,6 +523,7 @@ function Filter({
             : null
         }
         placeholder="Filter..."
+        clearable
         style={{ fontWeight: 400 }}
         data={filterOptions.options}
         styles={{ input: { minWidth: 0 } }}
@@ -542,21 +538,13 @@ function Filter({
   if (filterOptions.type === "multi-select") {
     return (
       <MultiSelect
-        rightSection={
-          <ActionIcon onClick={() => column.setFilterValue(null)}>
-            <IconX size="1rem" />
-          </ActionIcon>
-        }
+        clearable
         searchable
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        value={stringArrayValue ?? null}
+        value={stringArrayValue ?? []}
         placeholder="Filter..."
-        sx={{ fontWeight: 400 }}
+        style={{ fontWeight: 400 }}
         data={filterOptions.options}
         styles={{ input: { minWidth: 0 } }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         onChange={(values) => {
           if (Array.isArray(values)) {
             setStringArrayValue(values);

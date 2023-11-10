@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.5
+
+### Patch Changes
+
+- Fix select & multi-select filter types
+
 ## 2.2.2
 
 ### Patch Changes
