@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.6
+
+### Patch Changes
+
+- better clearable button for text filters
+
 ## 2.2.5
 
 ### Patch Changes

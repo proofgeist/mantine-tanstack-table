@@ -597,6 +597,8 @@ function DebouncedInput({
 
   const rightSection = isEmpty(value) ? null : (
     <ActionIcon
+      variant="subtle"
+      color="gray"
       onClick={() => {
         setValue("");
         onChange("");
