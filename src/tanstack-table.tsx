@@ -88,6 +88,7 @@ type Props<T extends Table<any>> = TableProps & {
   header?: React.ReactNode;
   scrollHeight?: string | number;
   rowCount?: number;
+  groupIndividualRows?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,6 +108,7 @@ export default function TanstackTable<T extends Table<any>>({
   header,
   rowCount,
   renderSubComponent,
+  groupIndividualRows = true,
 
   // labels = {},
   perPageOptions = [10, 25, 50],
@@ -349,69 +351,79 @@ export default function TanstackTable<T extends Table<any>>({
               ))}
             </MTable.Thead>
             <MTable.Tbody>
-              {rows.rows.map((row) => (
-                <>
-                  <MTable.Tr
-                    key={row.id}
-                    data-on-row-click={!!onRowClick}
-                    onClick={() => {
-                      onRowClick && onRowClick(row as ReturnType<T["getRow"]>);
-                    }}
-                    style={rowStyles as MantineStyleProp}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <MTable.Td
-                        key={cell.id}
-                        style={{
-                          width: cell.column.getSize(),
-                          ...cell.getContext().column.columnDef.meta?.cellStyle,
-                        }}
-                      >
-                        {cell.getIsGrouped() ? (
-                          <Flex
-                            align="center"
-                            gap={4}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              row.getToggleExpandedHandler()();
-                            }}
-                          >
-                            {row.getIsExpanded() ? (
-                              <IconChevronDown size="1rem" />
-                            ) : (
-                              <IconChevronRight size="1rem" />
-                            )}
-                            {flexRender(
+              {rows.rows.map((row) => {
+                let shouldBypassPlaceholder = false;
+                if (!groupIndividualRows && row.subRows.length === 1) {
+                  row = row.subRows[0];
+                  shouldBypassPlaceholder = true;
+                }
+                return (
+                  <>
+                    <MTable.Tr
+                      key={row.id}
+                      data-on-row-click={!!onRowClick}
+                      onClick={() => {
+                        onRowClick &&
+                          onRowClick(row as ReturnType<T["getRow"]>);
+                      }}
+                      style={rowStyles as MantineStyleProp}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <MTable.Td
+                          key={cell.id}
+                          style={{
+                            width: cell.column.getSize(),
+                            ...cell.getContext().column.columnDef.meta
+                              ?.cellStyle,
+                          }}
+                        >
+                          {cell.getIsGrouped() ? (
+                            <Flex
+                              align="center"
+                              gap={4}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                row.getToggleExpandedHandler()();
+                              }}
+                            >
+                              {row.getIsExpanded() ? (
+                                <IconChevronDown size="1rem" />
+                              ) : (
+                                <IconChevronRight size="1rem" />
+                              )}
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}{" "}
+                              ({row.subRows.length})
+                            </Flex>
+                          ) : cell.getIsAggregated() ? (
+                            flexRender(
+                              cell.column.columnDef.aggregatedCell,
+                              cell.getContext()
+                            )
+                          ) : cell.getIsPlaceholder() &&
+                            !shouldBypassPlaceholder ? null : (
+                            flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
-                            )}{" "}
-                            ({row.subRows.length})
-                          </Flex>
-                        ) : cell.getIsAggregated() ? (
-                          flexRender(
-                            cell.column.columnDef.aggregatedCell,
-                            cell.getContext()
-                          )
-                        ) : cell.getIsPlaceholder() ? null : (
-                          flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )
-                        )}
-                      </MTable.Td>
-                    ))}
-                  </MTable.Tr>
-                  {!!renderSubComponent && row.getIsExpanded() && (
-                    <MTable.Tr data-subcomponent>
-                      <MTable.Td colSpan={row.getVisibleCells().length}>
-                        {renderSubComponent({
-                          row: row as ReturnType<T["getRow"]>,
-                        })}
-                      </MTable.Td>
+                            )
+                          )}
+                        </MTable.Td>
+                      ))}
                     </MTable.Tr>
-                  )}
-                </>
-              ))}
+                    {!!renderSubComponent && row.getIsExpanded() && (
+                      <MTable.Tr data-subcomponent>
+                        <MTable.Td colSpan={row.getVisibleCells().length}>
+                          {renderSubComponent({
+                            row: row as ReturnType<T["getRow"]>,
+                          })}
+                        </MTable.Td>
+                      </MTable.Tr>
+                    )}
+                  </>
+                );
+              })}
             </MTable.Tbody>
             {footerGroups.length > 0 &&
               footerGroups.some((footerGroup) => {

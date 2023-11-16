@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.7
+
+### Patch Changes
+
+- adding option to show single rows when grouping
+
 ## 2.2.6
 
 ### Patch Changes
