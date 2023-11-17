@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { type ReactElement, useEffect, useState } from "react";
+import React, {
+  type ReactElement,
+  useEffect,
+  useState,
+  useMemo,
+  Fragment,
+} from "react";
 
 import {
   type Column,
@@ -27,6 +33,8 @@ import {
   type MantineStyleProp,
   type ComboboxData,
   ScrollArea,
+  type AutocompleteProps,
+  Autocomplete,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -35,7 +43,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import "./style.css";
-import { isEmpty } from "lodash";
+import { isEmpty, uniq } from "lodash";
 import { useElementOuterSize } from "./hooks";
 
 declare module "@tanstack/table-core" {
@@ -52,14 +60,20 @@ declare module "@tanstack/table-core" {
           placeholder?: string;
         }
       | {
+          type: "autocomplete";
+          options?: ComboboxData;
+          placeholder?: string;
+          autocompleteProps?: Partial<Omit<AutocompleteProps, "data">>;
+        }
+      | {
           type: "select";
-          options: ComboboxData;
+          options?: ComboboxData;
           placeholder?: string;
           selectProps?: Partial<Omit<SelectProps, "data">>;
         }
       | {
           type: "multi-select";
-          options: ComboboxData;
+          options?: ComboboxData;
           placeholder?: string;
           selectProps?: Partial<Omit<MultiSelectProps, "data">>;
         };
@@ -359,9 +373,8 @@ export default function TanstackTable<T extends Table<any>>({
                   shouldBypassPlaceholder = true;
                 }
                 return (
-                  <>
+                  <Fragment key={row.id}>
                     <MTable.Tr
-                      key={row.id}
                       data-on-row-click={!!onRowClick}
                       onClick={() => {
                         onRowClick &&
@@ -422,7 +435,7 @@ export default function TanstackTable<T extends Table<any>>({
                         </MTable.Td>
                       </MTable.Tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </MTable.Tbody>
@@ -485,6 +498,9 @@ function Filter({
   );
 
   const filterOptions = column.columnDef.meta?.filter ?? { type: "text" };
+  const columnValues: string[] = uniq(
+    column.getFacetedRowModel().flatRows.map((row) => row.getValue(column.id))
+  );
 
   // useEffect(() => {
   // 	column.setFilterValue(debounced);
@@ -526,6 +542,28 @@ function Filter({
       </div>
     );
 
+  if (filterOptions.type === "autocomplete") {
+    return (
+      <Autocomplete
+        value={
+          stringValue ?? typeof columnFilterValue === "string"
+            ? (columnFilterValue as string)
+            : ""
+        }
+        placeholder="Filter..."
+        style={{ fontWeight: 400 }}
+        data={
+          !filterOptions.options ? columnValues.sort() : filterOptions.options
+        }
+        styles={{ input: { minWidth: 0 } }}
+        onChange={(value) => {
+          setStringValue(value);
+          column.setFilterValue(value);
+        }}
+        {...filterOptions.autocompleteProps}
+      />
+    );
+  }
   if (filterOptions.type === "select") {
     return (
       <Select
@@ -538,7 +576,9 @@ function Filter({
         placeholder="Filter..."
         clearable
         style={{ fontWeight: 400 }}
-        data={filterOptions.options}
+        data={
+          !filterOptions.options ? columnValues.sort() : filterOptions.options
+        }
         styles={{ input: { minWidth: 0 } }}
         onChange={(value) => {
           setStringValue(value);
@@ -556,7 +596,9 @@ function Filter({
         value={stringArrayValue ?? []}
         placeholder="Filter..."
         style={{ fontWeight: 400 }}
-        data={filterOptions.options}
+        data={
+          !filterOptions.options ? columnValues.sort() : filterOptions.options
+        }
         styles={{ input: { minWidth: 0 } }}
         onChange={(values) => {
           if (Array.isArray(values)) {

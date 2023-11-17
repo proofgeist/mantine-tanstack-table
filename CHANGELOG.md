@@ -1,5 +1,12 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.8
+
+### Patch Changes
+
+- add autocomplete filter option
+- filter data for autocomplete, select, and multiselect are now optional. If you don't pass any, it will use the current data within the row. Requires `getFacetedRowModel` set on the useTable hook
+
 ## 2.2.7
 
 ### Patch Changes
