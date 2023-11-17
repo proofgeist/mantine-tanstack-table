@@ -1,25 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { type ReactElement, useEffect, useState } from "react";
 
-import { Column, flexRender, RowData, Table } from "@tanstack/react-table";
+import {
+  type Column,
+  flexRender,
+  type RowData,
+  type Table,
+} from "@tanstack/react-table";
 import {
   Box,
   LoadingOverlay,
   Table as MTable,
-  TableProps,
+  type TableProps,
   Pagination,
   Group,
   Text,
   Select,
   TextInput,
-  TextInputProps,
+  type TextInputProps,
   MultiSelect,
   Flex,
-  SelectProps,
+  type SelectProps,
   ActionIcon,
-  MultiSelectProps,
-  MantineStyleProp,
-  ComboboxData,
+  type MultiSelectProps,
+  type MantineStyleProp,
+  type ComboboxData,
   ScrollArea,
 } from "@mantine/core";
 import {
@@ -116,24 +122,15 @@ export default function TanstackTable<T extends Table<any>>({
 }: Props<T>) {
   const footerGroups = table.getFooterGroups();
   const rows =
-    paginate || sortable ? table.getRowModel() : table.getCoreRowModel();
+    paginate ?? sortable ? table.getRowModel() : table.getCoreRowModel();
   const totalRowCount = rowCount ?? table.getFilteredRowModel().rows.length;
 
-  const {
-    ref: scrollViewportRef,
-    width: scrollViewportWidth,
-    height: scrollViewportHeight,
-  } = useElementOuterSize<HTMLDivElement>();
+  const { ref: scrollViewportRef } = useElementOuterSize<HTMLDivElement>();
 
   const { ref: headerRef, height: headerHeight } =
     useElementOuterSize<HTMLTableSectionElement>();
-  const {
-    ref: tableRef,
-    width: tableWidth,
-    height: tableHeight,
-  } = useElementOuterSize<HTMLTableElement>();
-  const { ref: footerRef, height: footerHeight } =
-    useElementOuterSize<HTMLTableSectionElement>();
+  const { ref: tableRef } = useElementOuterSize<HTMLTableElement>();
+  const { ref: footerRef } = useElementOuterSize<HTMLTableSectionElement>();
   const { ref: paginationRef, height: paginationHeight } =
     useElementOuterSize<HTMLDivElement>();
 
@@ -353,7 +350,11 @@ export default function TanstackTable<T extends Table<any>>({
             <MTable.Tbody>
               {rows.rows.map((row) => {
                 let shouldBypassPlaceholder = false;
-                if (!groupIndividualRows && row.subRows.length === 1) {
+                if (
+                  !groupIndividualRows &&
+                  row.subRows.length === 1 &&
+                  row.subRows[0]
+                ) {
                   row = row.subRows[0];
                   shouldBypassPlaceholder = true;
                 }
@@ -540,7 +541,7 @@ function Filter({
         data={filterOptions.options}
         styles={{ input: { minWidth: 0 } }}
         onChange={(value) => {
-          setStringValue(value as string);
+          setStringValue(value);
           column.setFilterValue(value);
         }}
         {...filterOptions.selectProps}
