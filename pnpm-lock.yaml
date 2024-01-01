@@ -62,7 +62,7 @@ devDependencies:
     specifier: ^8.4.31
     version: 8.4.33
   postcss-preset-mantine:
-    specifier: ^1.10.0
+    specifier: ^1.12.2
     version: 1.12.3(postcss@8.4.33)
   postcss-simple-vars:
     specifier: ^7.0.1
