@@ -1,5 +1,14 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.9
+
+### Patch Changes
+
+- f2ce017: Bump vite from 4.4.9 to 4.5.0
+- bb7833f: Bump @rollup/plugin-typescript from 11.1.4 to 11.1.5
+- 696927f: Bump postcss-preset-mantine from 1.10.0 to 1.12.2
+- ec2d0ec: Bump prettier from 3.0.3 to 3.1.1
+
 ## 2.2.8
 
 ### Patch Changes
