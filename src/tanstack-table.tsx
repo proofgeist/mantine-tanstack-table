@@ -13,6 +13,7 @@ import {
   flexRender,
   type RowData,
   type Table,
+  Row,
 } from "@tanstack/react-table";
 import {
   Box,
@@ -100,7 +101,10 @@ type Props<T extends Table<any>> = TableProps & {
   columnFilters?: boolean;
   // labels?: Partial<typeof defaultLabels>;
   perPageOptions?: number[];
-  rowStyles?: (row: ReturnType<T["getRow"]>) => MantineStyleProp;
+  rowStyles?: (
+    row: ReturnType<T["getRow"]>,
+    rowIndex?: number
+  ) => MantineStyleProp;
   stickyTop?: number | null;
   stickyFoot?: number | null;
   stickyBorderRadius?: string | null;
@@ -362,7 +366,7 @@ export default function TanstackTable<T extends Table<any>>({
               ))}
             </MTable.Thead>
             <MTable.Tbody>
-              {rows.rows.map((row) => {
+              {rows.rows.map((row, rowIndex) => {
                 let shouldBypassPlaceholder = false;
                 if (
                   !groupIndividualRows &&
@@ -380,7 +384,12 @@ export default function TanstackTable<T extends Table<any>>({
                         onRowClick &&
                           onRowClick(row as ReturnType<T["getRow"]>);
                       }}
-                      style={rowStyles as MantineStyleProp}
+                      style={
+                        rowStyles(
+                          row as ReturnType<T["getRow"]>,
+                          rowIndex
+                        ) as MantineStyleProp
+                      }
                     >
                       {row.getVisibleCells().map((cell) => (
                         <MTable.Td
