@@ -101,7 +101,10 @@ type Props<T extends Table<any>> = TableProps & {
   columnFilters?: boolean;
   // labels?: Partial<typeof defaultLabels>;
   perPageOptions?: number[];
-  rowStyles?: (row: Row<T>, rowIndex?: number) => MantineStyleProp;
+  rowStyles?: (
+    row: ReturnType<T["getRow"]>,
+    rowIndex?: number
+  ) => MantineStyleProp;
   stickyTop?: number | null;
   stickyFoot?: number | null;
   stickyBorderRadius?: string | null;
@@ -381,7 +384,12 @@ export default function TanstackTable<T extends Table<any>>({
                         onRowClick &&
                           onRowClick(row as ReturnType<T["getRow"]>);
                       }}
-                      style={rowStyles(row, rowIndex) as MantineStyleProp}
+                      style={
+                        rowStyles(
+                          row as ReturnType<T["getRow"]>,
+                          rowIndex
+                        ) as MantineStyleProp
+                      }
                     >
                       {row.getVisibleCells().map((cell) => (
                         <MTable.Td
