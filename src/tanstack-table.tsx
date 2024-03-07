@@ -13,6 +13,7 @@ import {
   flexRender,
   type RowData,
   type Table,
+  Row,
 } from "@tanstack/react-table";
 import {
   Box,
@@ -380,7 +381,7 @@ export default function TanstackTable<T extends Table<any>>({
                         onRowClick &&
                           onRowClick(row as ReturnType<T["getRow"]>);
                       }}
-                      style={rowStyles as MantineStyleProp}
+                      style={rowStyles(row as any)}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <MTable.Td

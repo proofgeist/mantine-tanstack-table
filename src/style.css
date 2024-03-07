@@ -9,7 +9,7 @@
     & > tr {
       &:last-of-type {
         &[data-with-row-border] {
-          --_tr-border-bottom: rem(1px) solid var(--_table-border-color) !important;
+          --_tr-border-bottom: none;
         }
       }
     }
@@ -19,7 +19,7 @@
     & > tr {
       &:last-of-type {
         &[data-with-row-border] {
-          --_tr-border-bottom: none;
+          --_tr-border-top: rem(1px) solid var(--_table-border-color) !important;
         }
       }
     }

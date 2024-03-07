@@ -1,7 +1,7 @@
 {
   "name": "@proofgeist/mantine-tanstack-table",
   "private": false,
-  "version": "2.2.8",
+  "version": "2.2.9",
   "type": "module",
   "repository": "https://github.com/proofgeist/mantine-tanstack-table",
   "bugs": "https://github.com/proofgeist/mantine-tanstack-table/issues",
@@ -28,8 +28,8 @@
     "changeset": "changeset"
   },
   "dependencies": {
-    "@tabler/icons-react": "^2.40.0",
-    "@tanstack/match-sorter-utils": "^8.8.4",
+    "@tabler/icons-react": "^2.47.0",
+    "@tanstack/match-sorter-utils": "^8.11.8",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -42,22 +42,22 @@
     "@tanstack/table-core": "^8.10.3"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.2",
-    "@rollup/plugin-typescript": "^11.1.5",
-    "@types/lodash": "^4.14.201",
-    "@types/node": "^20.9.0",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
-    "@vitejs/plugin-react": "^4.1.0",
-    "postcss": "^8.4.31",
-    "postcss-preset-mantine": "^1.12.2",
+    "@changesets/cli": "^2.27.1",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.11.25",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "@vitejs/plugin-react": "^4.2.1",
+    "postcss": "^8.4.35",
+    "postcss-preset-mantine": "^1.13.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "3.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-typescript-paths": "^1.4.0",
+    "rollup-plugin-typescript-paths": "^1.5.0",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
-    "vite-plugin-dts": "^3.6.0"
+    "typescript": "^5.4.2",
+    "vite": "^4.5.2",
+    "vite-plugin-dts": "^3.7.3"
   }
 }
