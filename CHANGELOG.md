@@ -1,5 +1,11 @@
 # @proofgeist/mantine-tanstack-table
 
+## 2.2.10
+
+### Patch Changes
+
+- add types export
+
 ## 2.2.9
 
 ### Patch Changes

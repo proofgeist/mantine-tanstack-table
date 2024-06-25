@@ -1,7 +1,7 @@
 {
   "name": "@proofgeist/mantine-tanstack-table",
   "private": false,
-  "version": "2.2.9",
+  "version": "2.2.10",
   "type": "module",
   "repository": "https://github.com/proofgeist/mantine-tanstack-table",
   "bugs": "https://github.com/proofgeist/mantine-tanstack-table/issues",
@@ -11,6 +11,7 @@
   "exports": {
     ".": {
       "import": "./dist/mantine-tanstack-table.es.js",
+      "types": "./dist/index.d.ts",
       "require": "./dist/mantine-tanstack-table.umd.js"
     },
     "./styles.css": "./dist/style.css"
